@@ -89,7 +89,7 @@ inviato: lo dice chiaramente e offre l'indirizzo a cui scrivere.
 I file originali (PNG da ~2 MB, video fino a 54 MB) sono stati ricompressi per
 il web: immagini in WebP a 900px, video H.264 a 1280px/30fps con poster WebP.
 Da ~120 MB a ~8 MB complessivi. Le sorgenti restano nelle cartelle
-`immagini/` e `Video/` del progetto, fuori da `web/`.
+`immagini/` e `Video/`, accanto al progetto.
 
 Lo spot (3,3 MB) non viene scaricato al caricamento della pagina: parte solo
 quando la sezione si avvicina al viewport.

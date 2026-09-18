@@ -16,5 +16,5 @@ Thumbs.db
 desktop.ini
 
 # Video sorgente (renderizzati, 93 MB). Le versioni compresse per il web
-# sono versionate in web/public/video/.
+# sono versionate in public/video/.
 Video/
