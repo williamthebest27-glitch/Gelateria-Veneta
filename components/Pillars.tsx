@@ -142,7 +142,7 @@ function PillarCard({ pillar, index, total, ref }: PillarCardProps) {
       }}
       data-active={active}
       style={{ "--c1": pillar.c1, "--c2": pillar.c2 } as React.CSSProperties}
-      className="sticky top-[clamp(16px,3vh,40px)] isolate mb-[clamp(40px,9vh,120px)] flex min-h-[min(86svh,720px)] flex-col overflow-hidden rounded-[clamp(22px,3vw,34px)] border border-line bg-[linear-gradient(165deg,rgb(255_255_255/0.08),rgb(255_255_255/0.02)_42%,rgb(0_0_0/0.22)),#0b0b0f] shadow-[0_30px_80px_rgb(0_0_0/0.5)] [transform-origin:50%_0%] will-change-[transform,filter] last:mb-0"
+      className="sticky top-[clamp(16px,3vh,40px)] isolate mb-[clamp(40px,9vh,120px)] flex min-h-[min(86svh,720px)] flex-col overflow-hidden rounded-[clamp(22px,3vw,34px)] border border-line bg-[#0b0b0f] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.08),rgb(255_255_255/0.02)_42%,rgb(0_0_0/0.22))] shadow-[0_30px_80px_rgb(0_0_0/0.5)] [transform-origin:50%_0%] will-change-[transform,filter] last:mb-0"
     >
       {/* Bordo a gradiente conico rotante */}
       <span aria-hidden className="ring-conic z-[4] opacity-90" />

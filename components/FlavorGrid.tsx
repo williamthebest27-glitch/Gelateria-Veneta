@@ -159,7 +159,7 @@ function FlavorCard({ flavor, index }: { flavor: Flavor; index: number }) {
         visible ? "translate-y-0 scale-100 opacity-100" : "translate-y-[30px] scale-[0.985] opacity-0",
       ].join(" ")}
     >
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-[linear-gradient(165deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015)),rgb(22_12_14/0.55)] shadow-[0_14px_34px_-16px_rgb(0_0_0/0.7)] transition-transform duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:-translate-y-1.5 group-hover:rotate-[-1.2deg]">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-[rgb(22_12_14/0.72)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] shadow-[0_14px_34px_-16px_rgb(0_0_0/0.7)] transition-transform duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:-translate-y-1.5 group-hover:rotate-[-1.2deg]">
         {/* Bordo che si illumina al passaggio del mouse */}
         <span
           aria-hidden

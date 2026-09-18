@@ -119,7 +119,7 @@ export function FlavorShowcase() {
           className={
             reduced
               ? "flex flex-col justify-center py-[120px]"
-              : "sticky top-0 flex h-screen flex-col justify-center overflow-hidden"
+              : "sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-[clamp(70px,10vh,110px)]"
           }
         >
           {/* ---------- Intestazione ---------- */}
@@ -128,7 +128,7 @@ export function FlavorShowcase() {
               "z-[5] flex items-end justify-between gap-5",
               reduced
                 ? "px-pad pb-10 max-[640px]:flex-col max-[640px]:items-start"
-                : "pointer-events-none absolute left-pad right-pad top-[clamp(26px,5vh,60px)] max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-2",
+                : "pointer-events-none absolute left-pad right-pad top-[clamp(92px,13vh,120px)] max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-2",
             ].join(" ")}
           >
             <div>
@@ -190,7 +190,7 @@ export function FlavorShowcase() {
                 style={{ "--c1": flavor.c1, "--c2": flavor.c2 } as React.CSSProperties}
                 className="w-[clamp(260px,26vw,360px)] flex-none snap-center will-change-transform max-[640px]:w-[78vw]"
               >
-                <div className="group relative z-[1] rounded-[26px] border border-line bg-white/[0.035] px-7 pb-8 pt-[30px] backdrop-blur-[10px] transition-[transform,box-shadow,border-color,background] duration-[550ms] [transition-timing-function:var(--ease-spring)] will-change-transform hover:z-[6] hover:-translate-y-3.5 hover:scale-[1.07] hover:border-[color-mix(in_srgb,var(--c1)_75%,transparent)] hover:bg-white/[0.07] hover:shadow-[0_38px_74px_rgb(0_0_0/0.55),0_0_70px_color-mix(in_srgb,var(--c1)_30%,transparent)] max-[900px]:bg-[rgb(20_20_25/0.55)] max-[900px]:backdrop-blur-none">
+                <div className="group relative z-[1] rounded-[26px] border border-line bg-[rgb(20_20_25/0.58)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.07),rgb(255_255_255/0.015))] px-7 pb-8 pt-[30px] shadow-[0_18px_44px_rgb(0_0_0/0.35)] transition-[transform,box-shadow,border-color,background-color] duration-[800ms] ease-brand will-change-transform hover:z-[6] hover:-translate-y-3 hover:scale-[1.06] hover:border-[color-mix(in_srgb,var(--c1)_75%,transparent)] hover:bg-[rgb(31_31_39/0.72)] hover:shadow-[0_38px_74px_rgb(0_0_0/0.55),0_0_70px_color-mix(in_srgb,var(--c1)_30%,transparent)]">
                   <div
                     className="relative flex h-[clamp(220px,24vw,300px)] items-end justify-center max-[900px]:animate-none"
                     style={{
@@ -198,7 +198,7 @@ export function FlavorShowcase() {
                       animationDelay: `${-1.2 * i}s`,
                     }}
                   >
-                    <span className="absolute inset-x-0 bottom-[8%] top-auto h-[60%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_75%)] opacity-85 blur-[28px] transition-[opacity,transform] duration-[600ms] [transition-timing-function:var(--ease-spring)] group-hover:scale-[1.18] group-hover:opacity-100" />
+                    <span className="absolute inset-x-0 bottom-[8%] top-auto h-[60%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_75%)] opacity-85 blur-[28px] transition-[opacity,transform] duration-[800ms] ease-brand group-hover:scale-[1.16] group-hover:opacity-100" />
                     <span
                       ref={(el) => {
                         photoRefs.current[i] = el;
@@ -210,7 +210,7 @@ export function FlavorShowcase() {
                         alt={flavor.name}
                         fill
                         sizes="(max-width: 640px) 78vw, (max-width: 1400px) 26vw, 360px"
-                        className="pointer-events-none object-contain drop-shadow-[0_18px_26px_rgb(0_0_0/0.5)] transition-[filter] duration-500 ease-brand group-hover:brightness-110 group-hover:saturate-[1.08] max-[900px]:drop-shadow-none"
+                        className="pointer-events-none object-contain drop-shadow-[0_18px_26px_rgb(0_0_0/0.5)] transition-[transform,filter] duration-[900ms] ease-brand group-hover:scale-[1.05] group-hover:brightness-110 group-hover:saturate-[1.08] max-[900px]:drop-shadow-none"
                       />
                     </span>
                   </div>
