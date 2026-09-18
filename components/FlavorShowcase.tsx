@@ -119,9 +119,15 @@ export function FlavorShowcase() {
           className={
             reduced
               ? "flex flex-col justify-center py-[120px]"
-              : "sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-[clamp(70px,10vh,110px)]"
+              : "sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-[clamp(56px,8vh,110px)]"
           }
         >
+          {/* Velo in alto: tiene leggibile il titolo quando una card
+              gli passa sotto sugli schermi più bassi. */}
+          {!reduced && (
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-[4] h-[clamp(190px,28vh,260px)] bg-[linear-gradient(180deg,rgb(8_8_10/0.88)_0%,rgb(8_8_10/0.62)_48%,transparent_100%)]" />
+          )}
+
           {/* ---------- Intestazione ---------- */}
           <div
             className={[
