@@ -1,0 +1,20 @@
+# Dipendenze e build
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Ambiente
+.env
+.env*.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Video sorgente (renderizzati, 93 MB). Le versioni compresse per il web
+# sono versionate in web/public/video/.
+Video/

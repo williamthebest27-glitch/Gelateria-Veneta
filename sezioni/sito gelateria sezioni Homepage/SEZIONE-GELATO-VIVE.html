@@ -1,0 +1,219 @@
+<!-- ============================================================= -->
+<!--  SEZIONE "IL GELATO PRENDE VITA" — SCROLL ASSEMBLY (spot)     -->
+<!--  Gli ingredienti volano dentro e si assemblano con lo scroll.  -->
+<!--  Elementor: widget HTML Custom. CSS namespacizzato in .gv      -->
+<!--  ▼ Salva/Carica le immagini e (per WP) sostituisci i src con   -->
+<!--    gli URL della Libreria Media.                                -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Cinzel:wght@600;700&display=swap');
+
+.gv{
+    --bg:#070708; --ink:#F4F1EA; --muted:rgba(244,241,234,.6); --line:rgba(244,241,234,.14);
+    --accent:#FFC53D; --glow-a:#FF4D6D; --glow-b:#FF8A3D;
+    --ease:cubic-bezier(.16,1,.3,1); --pad:clamp(18px,4vw,60px);
+    position:relative; background:var(--bg); color:var(--ink); overflow:clip;
+    width:100vw; max-width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; isolation:isolate;
+}
+.gv *{box-sizing:border-box; margin:0; padding:0;}
+
+.gv-wrap{position:relative; height:400vh; z-index:1;}
+.gv-sticky{position:sticky; top:0; height:100vh; overflow:hidden;}
+
+/* ambient + colour glow dietro la scena */
+.gv-sticky::before{content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+        radial-gradient(45% 40% at 50% 46%, rgba(255,255,255,.06), transparent 70%),
+        radial-gradient(60% 50% at 18% 20%, color-mix(in srgb,var(--glow-a) 14%, transparent), transparent 70%),
+        radial-gradient(60% 50% at 82% 80%, color-mix(in srgb,var(--glow-b) 14%, transparent), transparent 70%);}
+
+/* ---- stage ---- */
+.gv-stage{position:absolute; inset:0; z-index:1;}
+.gv-glow{position:absolute; left:50%; top:50%; width:min(90vw,820px); aspect-ratio:1; transform:translate(-50%,-50%);
+    border-radius:50%; opacity:0; z-index:0; pointer-events:none;
+    background:radial-gradient(closest-side, color-mix(in srgb,var(--accent) 34%, transparent), color-mix(in srgb,var(--glow-b) 14%, transparent) 45%, transparent 70%);}
+.gv-layer{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); pointer-events:none;}
+.gv-layer__img{display:block; width:100%; height:auto; opacity:0; will-change:transform,opacity;}
+
+/* dimensioni per layer */
+.l-splash{width:clamp(320px,54vw,720px); z-index:1;}
+.l-fruit {width:clamp(170px,26vw,360px); z-index:2;}
+.l-scoop {width:clamp(150px,22vw,300px); z-index:3;}
+.l-cone  {width:clamp(170px,25vw,360px); z-index:4;}
+.l-choco {width:clamp(280px,46vw,600px); z-index:5;}
+
+/* foglie di menta (CSS) */
+.gv-mint{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:6;
+    width:clamp(26px,3.4vw,46px); aspect-ratio:1;}
+.gv-mint span{display:block; width:100%; height:100%; opacity:0; will-change:transform,opacity;
+    background:radial-gradient(circle at 35% 30%, #b6f06a, #3da35d 70%, #2c7d46);
+    border-radius:0 100% 0 100%; box-shadow:inset -3px -4px 8px rgba(0,0,0,.25), inset 3px 3px 6px rgba(255,255,255,.3);}
+.gv-mint span::after{content:''; position:absolute; left:50%; top:18%; width:2px; height:64%; background:rgba(255,255,255,.35); transform:translateX(-50%) rotate(45deg); transform-origin:top;}
+
+/* ---- testi ---- */
+.gv-eyebrow{position:absolute; top:clamp(22px,4.5vh,46px); left:var(--pad); z-index:8;
+    font-size:12px; letter-spacing:.26em; text-transform:uppercase; color:var(--accent);
+    display:flex; align-items:center; gap:10px;}
+.gv-eyebrow b{letter-spacing:.1em; color:var(--muted); font-weight:400;}
+.gv-stars{position:absolute; top:clamp(22px,4.5vh,46px); right:var(--pad); z-index:8; color:var(--accent); letter-spacing:3px; font-size:13px;}
+
+.gv-caps{position:absolute; left:0; right:0; bottom:clamp(70px,12vh,120px); z-index:8; text-align:center; pointer-events:none; height:1.2em;}
+.gv-cap{position:absolute; left:0; right:0; top:0; opacity:0; will-change:opacity,transform;
+    font-family:'Cinzel', Georgia, serif; font-weight:700; letter-spacing:.04em;
+    font-size:clamp(1.6rem,5vw,3.4rem); line-height:1.1;
+    background:linear-gradient(100deg,var(--accent),#fff 45%,var(--glow-b) 70%,var(--accent)); background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    text-shadow:0 6px 40px rgba(0,0,0,.4);}
+
+.gv-hint{position:absolute; left:50%; bottom:clamp(26px,5vh,48px); transform:translateX(-50%); z-index:8;
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:10px;
+    opacity:0; transition:opacity .6s var(--ease);}
+.gv.is-in .gv-hint{opacity:1;}
+.gv-hint .m{width:20px; height:32px; border:1px solid var(--line); border-radius:12px; position:relative;}
+.gv-hint .m::after{content:''; position:absolute; left:50%; top:6px; width:3px; height:7px; border-radius:3px; background:var(--accent); transform:translateX(-50%); animation:gv-wheel 1.8s var(--ease) infinite;}
+@keyframes gv-wheel{0%{opacity:0;transform:translate(-50%,0)}30%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
+
+/* progress */
+.gv-prog{position:absolute; left:var(--pad); right:var(--pad); bottom:clamp(14px,2.4vh,22px); height:2px; background:var(--line); z-index:8; border-radius:2px; overflow:hidden;}
+.gv-prog i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--glow-a)); box-shadow:0 0 14px var(--accent);}
+
+/* perf mobile: niente filtri pesanti (gia' assenti), riduco glow */
+@media (max-width:900px){
+    .gv-sticky::before{background:radial-gradient(50% 40% at 50% 46%, rgba(255,255,255,.05), transparent 70%);}
+}
+@media (prefers-reduced-motion:reduce){
+    .gv-wrap{height:auto;}
+    .gv-sticky{position:static; height:auto; padding:90px 0;}
+    .gv-layer__img,.gv-mint span{opacity:1 !important; transform:none !important;}
+    .gv-glow{opacity:.6;}
+    .gv-caps{position:static; height:auto; margin-top:30px;}
+    .gv-cap{position:static; opacity:1;}
+    .gv-cap + .gv-cap{display:none;}
+}
+</style>
+
+<section class="gv" id="gvRoot">
+    <div class="gv-wrap" data-gv-wrap>
+        <div class="gv-sticky">
+            <div class="gv-eyebrow">Il Gelato prende vita <b>· lo spot</b></div>
+            <div class="gv-stars">★★★★★</div>
+
+            <div class="gv-stage" data-gv-stage>
+                <div class="gv-glow" data-glow></div>
+
+                <!-- ▼ sostituisci i src con gli URL della Libreria Media -->
+                <div class="gv-layer l-splash"><img class="gv-layer__img" src="https://lyamweb.com/wp-content/uploads/2026/06/splash-di-latte.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+                <div class="gv-layer l-fruit"><img class="gv-layer__img" src="https://lyamweb.com/wp-content/uploads/2026/06/frutta-di-stagione.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+                <div class="gv-layer l-scoop"><img class="gv-layer__img" src="https://lyamweb.com/wp-content/uploads/2026/06/cucchiaio-gelato.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+                <div class="gv-layer l-cone"><img class="gv-layer__img" src="https://lyamweb.com/wp-content/uploads/2026/06/puffo-cono.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+                <div class="gv-layer l-choco"><img class="gv-layer__img" src="https://lyamweb.com/wp-content/uploads/2026/06/colata-di-cioccolato.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+
+                <!-- menta CSS -->
+                <div class="gv-mint m1"><span></span></div>
+                <div class="gv-mint m2"><span></span></div>
+                <div class="gv-mint m3"><span></span></div>
+            </div>
+
+            <div class="gv-caps">
+                <div class="gv-cap" data-s="0"    data-e="0.16">Solo ingredienti veri</div>
+                <div class="gv-cap" data-s="0.14" data-e="0.40">Frutta di stagione</div>
+                <div class="gv-cap" data-s="0.36" data-e="0.58">Latte fresco</div>
+                <div class="gv-cap" data-s="0.54" data-e="0.74">Cioccolato fondente</div>
+                <div class="gv-cap" data-s="0.72" data-e="1.02">Il gelato prende vita</div>
+            </div>
+
+            <div class="gv-hint"><span class="m"></span> Scorri</div>
+            <div class="gv-prog"><i data-gv-prog></i></div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function(){
+    'use strict';
+    var root=document.getElementById('gvRoot');
+    if(!root||root.dataset.init) return; root.dataset.init='1';
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var wrap = root.querySelector('[data-gv-wrap]');
+    var prog = root.querySelector('[data-gv-prog]');
+    var glow = root.querySelector('[data-glow]');
+    var caps = Array.prototype.slice.call(root.querySelectorAll('.gv-cap'));
+
+    function q(s){ return root.querySelector(s); }
+    /* coreografia: ogni layer ha range [s,e] e stato from->to (x%,y%,scale,rot,opacity) */
+    var layers = [
+        { el:q('.l-splash .gv-layer__img'), s:.04, e:.30, f:{x:0,  y:0,  sc:.3, r:0,   o:0}, t:{x:0,  y:-3, sc:1.15,r:0,  o:.85} },
+        { el:q('.l-fruit  .gv-layer__img'), s:.14, e:.40, f:{x:-130,y:14, sc:.6, r:-35, o:0}, t:{x:-58, y:24, sc:.85, r:-6, o:1} },
+        { el:q('.l-scoop  .gv-layer__img'), s:.42, e:.70, f:{x:140, y:-10,sc:.5, r:40,  o:0}, t:{x:60,  y:10, sc:.78, r:-8, o:1} },
+        { el:q('.l-choco  .gv-layer__img'), s:.32, e:.58, f:{x:0,  y:-150,sc:.95,r:0,   o:0}, t:{x:6,   y:-40,sc:1,   r:0,  o:1} },
+        { el:q('.l-cone   .gv-layer__img'), s:.58, e:.99, f:{x:0,  y:150, sc:.75,r:0,   o:0}, t:{x:0,   y:14, sc:1,   r:0,  o:1} },
+        { el:q('.m1 span'), s:.60, e:.88, f:{x:-40,y:-260,sc:.4,r:-60,o:0}, t:{x:-380,y:-160,sc:1,r:-30,o:.95} },
+        { el:q('.m2 span'), s:.66, e:.92, f:{x:40, y:-260,sc:.4,r:60, o:0}, t:{x:360, y:-130,sc:1,r:40, o:.95} },
+        { el:q('.m3 span'), s:.72, e:.98, f:{x:0,  y:-260,sc:.4,r:0,  o:0}, t:{x:120, y:-220,sc:.9,r:20,o:.9} }
+    ];
+
+    function clamp01(v){ return v<0?0:(v>1?1:v); }
+    function eOut(t){ return 1-Math.pow(1-t,3); }
+    function lerp(a,b,t){ return a+(b-a)*t; }
+
+    function apply(p){
+        for(var i=0;i<layers.length;i++){
+            var L=layers[i]; if(!L.el) continue;
+            var lp=eOut(clamp01((p-L.s)/(L.e-L.s)));
+            var x=lerp(L.f.x,L.t.x,lp), y=lerp(L.f.y,L.t.y,lp),
+                sc=lerp(L.f.sc,L.t.sc,lp), r=lerp(L.f.r,L.t.r,lp), o=lerp(L.f.o,L.t.o,lp);
+            L.el.style.transform='translate3d('+x+'%,'+y+'%,0) rotate('+r+'deg) scale('+sc+')';
+            L.el.style.opacity=o;
+        }
+        if(glow){ var gp=eOut(clamp01((p-.5)/.45)); glow.style.opacity=(gp*0.9); glow.style.transform='translate(-50%,-50%) scale('+(0.6+gp*0.5)+')'; }
+        for(var c=0;c<caps.length;c++){
+            var s=parseFloat(caps[c].dataset.s), e=parseFloat(caps[c].dataset.e), op=0, tr=12;
+            if(p>=s && p<=e){ var k=(p-s)/(e-s);
+                op = k<.2 ? k/.2 : (k>.8 ? (1-k)/.2 : 1);
+                tr = (1-(k<.2?k/.2:1))*12;
+            }
+            caps[c].style.opacity=op; caps[c].style.transform='translateY('+tr+'px)';
+        }
+        if(prog) prog.style.width=(p*100)+'%';
+    }
+
+    if(reduce){ apply(1); return; }
+
+    /* misure + loop con smoothing */
+    var wrapTop=0, dist=1;
+    function measure(){
+        wrapTop = wrap.getBoundingClientRect().top + (window.scrollY||window.pageYOffset);
+        dist = (wrap.offsetHeight - window.innerHeight) || 1;
+    }
+    function targetP(){
+        var sy=window.scrollY||window.pageYOffset;
+        return clamp01((sy - wrapTop)/dist);
+    }
+    var curP=0, tgtP=0, running=false;
+    function frame(){
+        curP += (tgtP-curP)*0.10;
+        var settled=Math.abs(tgtP-curP)<0.0008;
+        if(settled) curP=tgtP;
+        apply(curP);
+        if(running && !settled){ requestAnimationFrame(frame); } else { running=false; }
+    }
+    function start(){ if(!running){ running=true; requestAnimationFrame(frame); } }
+
+    measure();
+    window.addEventListener('scroll', function(){ tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('resize', function(){ measure(); tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('load', function(){ measure(); tgtP=targetP(); start(); });
+
+    if('IntersectionObserver' in window){
+        var io=new IntersectionObserver(function(es){
+            es.forEach(function(e){ if(e.isIntersecting){ root.classList.add('is-in'); tgtP=targetP(); start(); } });
+        },{threshold:0});
+        io.observe(wrap);
+    } else { root.classList.add('is-in'); }
+
+    tgtP=targetP(); curP=tgtP; apply(curP); start();
+})();
+</script>

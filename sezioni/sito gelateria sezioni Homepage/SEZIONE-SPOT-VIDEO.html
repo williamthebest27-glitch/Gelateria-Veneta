@@ -1,0 +1,227 @@
+<!-- ============================================================= -->
+<!--  SEZIONE "SPOT" — VIDEO + KINETIC TYPOGRAPHY                  -->
+<!--  Video a schermo intero pinnato; frasi enormi che entrano in   -->
+<!--  scroll con animazioni diverse e spettacolari.                 -->
+<!--  Elementor: widget HTML Custom. CSS namespacizzato in .spt     -->
+<!--  ▼ Sostituisci src del <video> con l'URL della Libreria Media. -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@1&family=Cinzel:wght@600;700&display=swap');
+
+.spt{
+    --bg:#060607; --ink:#F7F4EE; --muted:rgba(247,244,238,.6); --line:rgba(247,244,238,.16);
+    --accent:#FFC53D; --glow-a:#FF4D6D; --glow-b:#FF8A3D;
+    --ease:cubic-bezier(.16,1,.3,1); --pad:clamp(18px,4vw,60px);
+    position:relative; background:var(--bg); color:var(--ink); overflow:clip;
+    width:100vw; max-width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; isolation:isolate;
+}
+.spt *{box-sizing:border-box; margin:0; padding:0;}
+
+.spt-wrap{position:relative; height:520vh; z-index:1;}
+.spt-sticky{position:sticky; top:0; height:100vh; overflow:hidden;}
+
+/* video */
+.spt-bg{position:absolute; inset:0; z-index:0; will-change:transform;}
+.spt-video{position:absolute; inset:-3%; width:106%; height:106%; object-fit:cover; transform:scale(1.04);
+    filter:saturate(1.08) contrast(1.05);}
+.spt-grade{position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:
+        radial-gradient(120% 90% at 50% 50%, transparent 30%, rgba(0,0,0,.55) 100%),
+        linear-gradient(180deg, rgba(6,6,7,.55) 0%, rgba(6,6,7,.15) 35%, rgba(6,6,7,.6) 100%);}
+.spt-grain{position:absolute; inset:-50%; z-index:2; opacity:.07; mix-blend-mode:overlay; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:spt-grain .6s steps(2) infinite;}
+@keyframes spt-grain{0%{transform:translate(0,0)}50%{transform:translate(-4%,3%)}100%{transform:translate(4%,-3%)}}
+.spt-frame{position:absolute; inset:14px; z-index:6; pointer-events:none; border:1px solid rgba(247,244,238,.12); border-radius:8px;}
+
+/* spot UI */
+.spt-rec{position:absolute; top:clamp(20px,4vh,40px); left:var(--pad); z-index:7; display:flex; align-items:center; gap:9px;
+    font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink);}
+.spt-rec b{width:10px; height:10px; border-radius:50%; background:#ff3b30; box-shadow:0 0 12px #ff3b30; animation:spt-blink 1.3s infinite;}
+@keyframes spt-blink{0%,100%{opacity:1}50%{opacity:.2}}
+.spt-tag{position:absolute; top:clamp(20px,4vh,40px); right:var(--pad); z-index:7; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--muted);}
+
+/* phrases stage */
+.spt-stage{position:absolute; inset:0; z-index:5; display:flex; align-items:center; justify-content:center;}
+.spt-ph{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:92%; max-width:1100px; text-align:center; pointer-events:none;}
+.spt-ph__t{display:block; opacity:0; will-change:transform,opacity,filter; transform-origin:center;}
+.spt-line{display:block; font-weight:700; letter-spacing:-.02em; line-height:.95;
+    font-size:clamp(2.4rem,11vw,8.5rem); text-shadow:0 10px 50px rgba(0,0,0,.45);}
+.spt-line.sm{font-size:clamp(1rem,3vw,2rem); font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-top:.4em;}
+.spt-ph .accent{color:var(--accent);}
+
+/* scatter letters */
+.spt-scatter .spt-ph__t{opacity:1;}
+.spt-let{display:inline-block; opacity:0; will-change:transform,opacity;}
+
+/* finale gold */
+.spt-final .spt-line{font-family:'Cinzel',serif; font-weight:700; letter-spacing:.06em;
+    background:linear-gradient(100deg,var(--accent),#fff 42%,var(--glow-b) 66%,var(--accent)); background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    filter:drop-shadow(0 0 36px color-mix(in srgb,var(--accent) 40%, transparent)); animation:spt-shine 6s linear infinite;}
+@keyframes spt-shine{to{background-position:220% center;}}
+
+/* progress + hint */
+.spt-hint{position:absolute; left:50%; bottom:clamp(46px,7vh,72px); transform:translateX(-50%); z-index:7;
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); opacity:0; transition:opacity .6s var(--ease);}
+.spt.is-in .spt-hint{opacity:1;}
+.spt-prog{position:absolute; left:var(--pad); right:var(--pad); bottom:clamp(16px,2.6vh,24px); height:2px; background:var(--line); z-index:7; border-radius:2px; overflow:hidden;}
+.spt-prog i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--glow-a)); box-shadow:0 0 14px var(--accent);}
+
+@media (prefers-reduced-motion:reduce){
+    .spt-wrap{height:auto;} .spt-sticky{position:static; height:100vh;}
+    .spt-ph{display:none;} .spt-final{display:block;}
+    .spt-final .spt-ph__t{opacity:1; transform:none;}
+}
+</style>
+
+<section class="spt" id="sptRoot">
+    <div class="spt-wrap" data-spt-wrap>
+        <div class="spt-sticky">
+            <div class="spt-bg" data-spt-bg>
+                <!-- ▼ sostituisci src con l'URL del video (Libreria Media WP) -->
+                <video class="spt-video" autoplay muted loop playsinline preload="auto" src="video-gelato.mp4"></video>
+                <div class="spt-grade"></div>
+                <div class="spt-grain"></div>
+            </div>
+            <div class="spt-frame"></div>
+
+            <div class="spt-rec"><b></b> Spot · On Air</div>
+            <div class="spt-tag">Gelateria Veneta</div>
+
+            <div class="spt-stage">
+                <!-- 1: flip 3D -->
+                <div class="spt-ph p1"><div class="spt-ph__t">
+                    <span class="spt-line">Artigianale</span>
+                    <span class="spt-line sm">dal 1970</span>
+                </div></div>
+                <!-- 2: lettere che si assemblano -->
+                <div class="spt-ph spt-scatter p2"><div class="spt-ph__t">
+                    <span class="spt-line" data-scatter>Mantecato ogni giorno</span>
+                </div></div>
+                <!-- 3: scale punch dal blur -->
+                <div class="spt-ph p3"><div class="spt-ph__t">
+                    <span class="spt-line">Ingredienti <span class="accent">veri</span></span>
+                </div></div>
+                <!-- 4: slide + skew -->
+                <div class="spt-ph p4"><div class="spt-ph__t">
+                    <span class="spt-line">Zero compromessi</span>
+                </div></div>
+                <!-- 5: finale oro -->
+                <div class="spt-ph spt-final p5"><div class="spt-ph__t">
+                    <span class="spt-line">Gelateria Veneta</span>
+                    <span class="spt-line sm" style="color:var(--accent)">il gusto prende vita</span>
+                </div></div>
+            </div>
+
+            <div class="spt-hint">Scorri</div>
+            <div class="spt-prog"><i data-spt-prog></i></div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function(){
+    'use strict';
+    var root=document.getElementById('sptRoot');
+    if(!root||root.dataset.init) return; root.dataset.init='1';
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var wrap=root.querySelector('[data-spt-wrap]');
+    var prog=root.querySelector('[data-spt-prog]');
+    var bg=root.querySelector('[data-spt-bg]');
+
+    function clamp01(v){return v<0?0:(v>1?1:v);}
+    function eOut(t){return 1-Math.pow(1-t,3);}
+    function eIn(t){return t*t*t;}
+
+    /* costruisci le lettere per la frase "scatter" con offset casuali */
+    var scatterEl = root.querySelector('[data-scatter]');
+    var letters=[];
+    if(scatterEl){
+        var txt=scatterEl.textContent; scatterEl.textContent='';
+        txt.split('').forEach(function(ch){
+            if(ch===' '){ scatterEl.appendChild(document.createTextNode(' ')); return; }
+            var s=document.createElement('span'); s.className='spt-let'; s.textContent=ch;
+            s._dx=(Math.random()*2-1)*240; s._dy=(Math.random()*2-1)*200; s._dr=(Math.random()*2-1)*140;
+            scatterEl.appendChild(s); letters.push(s);
+        });
+    }
+
+    /* config frasi generiche (fin = stato d'ingresso, fout = stato d'uscita) */
+    function T(sel){ var e=root.querySelector(sel); return e?e.querySelector('.spt-ph__t'):null; }
+    var phr=[
+        {t:T('.p1'), s:.02, e:.24, fin:{y:45,rx:-95}, fout:{y:-45,rx:95,blur:8}},
+        /* p2 scatter: .22-.46 gestita a parte */
+        {t:T('.p3'), s:.46, e:.66, fin:{sc:3.4,blur:34}, fout:{sc:.35,blur:26}},
+        {t:T('.p4'), s:.64, e:.84, fin:{x:-120,rz:-9,blur:6}, fout:{x:120,rz:9,blur:6}},
+        {t:T('.p5'), s:.84, e:1.3, fin:{y:60,sc:.7,blur:10}}
+    ];
+    var scatterPh={t:T('.p2'), s:.22, e:.46};
+
+    function f(F,name,ein,eout){
+        var rest=(name==='sc')?1:0;
+        var fin=(F.fin&&F.fin[name]!=null)?F.fin[name]:rest;
+        var fout=(F.fout&&F.fout[name]!=null)?F.fout[name]:rest;
+        var v=fin+(rest-fin)*ein; v=v+(fout-v)*eout; return v;
+    }
+    function applyPhrase(P,p){
+        if(!P.t) return;
+        var lp=clamp01((p-P.s)/(P.e-P.s));
+        var ein=eOut(clamp01(lp/0.34)), eout=eIn(clamp01((lp-0.66)/0.34));
+        var x=f(P,'x',ein,eout), y=f(P,'y',ein,eout), rx=f(P,'rx',ein,eout),
+            rz=f(P,'rz',ein,eout), sc=f(P,'sc',ein,eout), bl=f(P,'blur',ein,eout);
+        P.t.style.transform='perspective(1000px) translate3d('+x+'%,'+y+'%,0) rotateX('+rx+'deg) rotate('+rz+'deg) scale('+sc+')';
+        P.t.style.opacity=(ein*(1-eout));
+        P.t.style.filter=(bl>0.05)?'blur('+bl+'px)':'none';
+    }
+    function applyScatter(p){
+        if(!scatterPh.t) return;
+        var lp=clamp01((p-scatterPh.s)/(scatterPh.e-scatterPh.s));
+        var eout=eIn(clamp01((lp-0.66)/0.34));
+        scatterPh.t.style.opacity=(1-eout);
+        scatterPh.t.style.transform='scale('+(1-eout*0.25)+')';
+        for(var i=0;i<letters.length;i++){
+            var ll=eOut(clamp01((lp - i*0.012)/0.42));
+            var el=letters[i];
+            el.style.transform='translate3d('+(el._dx*(1-ll))+'px,'+(el._dy*(1-ll))+'px,0) rotate('+(el._dr*(1-ll))+'deg)';
+            el.style.opacity=ll;
+        }
+    }
+    function apply(p){
+        for(var i=0;i<phr.length;i++) applyPhrase(phr[i],p);
+        applyScatter(p);
+        if(bg) bg.style.transform='translate3d(0,'+(p*-4)+'%,0) scale('+(1+p*0.06)+')';
+        if(prog) prog.style.width=(p*100)+'%';
+    }
+
+    root.sptApply=apply; /* DEBUG */
+    if(reduce){ return; }
+
+    var wrapTop=0, dist=1;
+    function measure(){ wrapTop=wrap.getBoundingClientRect().top+(window.scrollY||window.pageYOffset); dist=(wrap.offsetHeight-window.innerHeight)||1; }
+    function targetP(){ return clamp01(((window.scrollY||window.pageYOffset)-wrapTop)/dist); }
+
+    var curP=0,tgtP=0,running=false;
+    function frame(){
+        curP+=(tgtP-curP)*0.10;
+        var settled=Math.abs(tgtP-curP)<0.0006;
+        if(settled) curP=tgtP;
+        apply(curP);
+        if(running&&!settled){ requestAnimationFrame(frame); } else { running=false; }
+    }
+    function start(){ if(!running){ running=true; requestAnimationFrame(frame); } }
+
+    measure();
+    window.addEventListener('scroll', function(){ tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('resize', function(){ measure(); tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('load', function(){ measure(); tgtP=targetP(); start(); });
+    if('IntersectionObserver' in window){
+        var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ root.classList.add('is-in'); tgtP=targetP(); start(); } }); },{threshold:0});
+        io.observe(wrap);
+    } else { root.classList.add('is-in'); }
+    tgtP=targetP(); curP=tgtP; apply(curP); start();
+})();
+</script>

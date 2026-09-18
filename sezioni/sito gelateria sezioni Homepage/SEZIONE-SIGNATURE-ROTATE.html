@@ -1,0 +1,310 @@
+<!-- ============================================================= -->
+<!--  SEZIONE "SIGNATURE" — STACKING CARDS + IMMAGINI              -->
+<!--  Entrata spettacolare: beam di scansione, card 3D rise,        -->
+<!--  immagini con wipe + 3D + glow, testi a mask.                  -->
+<!--  Elementor: widget HTML Custom. CSS namespacizzato in .sig     -->
+<!--  ▼ Sostituisci i src delle <img> con gli URL della Libreria    -->
+<!--    Media di WordPress (vedi commento su ogni card).            -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+.sig{
+    --bg:#08080a; --ink:#F4F1EA; --muted:rgba(244,241,234,.62); --line:rgba(244,241,234,.14);
+    --accent:#FFC53D; --glow-a:#FF4D6D; --glow-b:#FF8A3D;
+    --ease:cubic-bezier(.16,1,.3,1); --pad:clamp(16px,4vw,56px);
+    position:relative; background:var(--bg); color:var(--ink); overflow:clip;
+    /* full-bleed: edge-to-edge dentro Elementor */
+    width:100vw; max-width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; isolation:isolate;
+}
+.sig *{box-sizing:border-box; margin:0; padding:0;}
+
+/* ambient */
+.sig::before{content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+        radial-gradient(40% 30% at 12% 8%, color-mix(in srgb,var(--glow-a) 16%, transparent), transparent 70%),
+        radial-gradient(40% 30% at 88% 96%, color-mix(in srgb,var(--glow-b) 16%, transparent), transparent 70%);}
+
+/* beam di scansione all'ingresso della sezione */
+.sig-beam{position:absolute; left:0; right:0; top:0; height:160px; z-index:6; pointer-events:none; opacity:0;
+    background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 26%, transparent), transparent 85%);
+    mix-blend-mode:screen;}
+.sig.is-in .sig-beam{animation:sig-beam 1.7s var(--ease) .15s forwards;}
+@keyframes sig-beam{0%{opacity:0; transform:translateY(-160px)} 18%{opacity:1} 100%{opacity:0; transform:translateY(115vh)}}
+
+/* ---------- intro ---------- */
+.sig-intro{position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:clamp(64px,11vw,140px) var(--pad) clamp(20px,4vw,40px);}
+.sig-eyebrow{font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:10px;}
+.sig-eyebrow::before{content:''; width:0; height:1px; background:var(--accent); transition:width .9s var(--ease) .2s;}
+.sig-eyebrow.in::before{width:32px;}
+.sig-intro h2{font-size:clamp(2.4rem,8vw,5.2rem); font-weight:500; letter-spacing:-.035em; line-height:1; margin-top:16px; max-width:16ch;}
+.sig-intro h2 em{font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
+    background:linear-gradient(100deg,var(--accent),var(--glow-b),var(--glow-a)); background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation:sig-shine 6s linear infinite;}
+@keyframes sig-shine{to{background-position:200% center;}}
+.sig-intro p{margin-top:18px; max-width:48ch; font-size:clamp(1rem,1.3vw,1.18rem); line-height:1.6; color:var(--muted); font-weight:300;}
+
+/* reveal intro (3D rise) */
+.sig-rv{opacity:0; transform:translateY(32px) rotateX(10deg); transform-origin:bottom; transition:opacity .9s var(--ease), transform .9s var(--ease);}
+.sig-rv.in{opacity:1; transform:none;}
+
+/* ---------- stack ---------- */
+.sig-stack{position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 var(--pad) clamp(40px,8vw,90px);}
+.sig-card{
+    position:sticky; top:clamp(16px,3vh,40px);
+    min-height:min(86svh,720px);
+    margin-bottom:clamp(40px,9vh,120px);
+    border-radius:clamp(22px,3vw,34px);
+    overflow:hidden; isolation:isolate;
+    display:flex; flex-direction:column;
+    background:linear-gradient(165deg, rgba(255,255,255,.08), rgba(255,255,255,.02) 42%, rgba(0,0,0,.22)), #0b0b0f;
+    border:1px solid var(--line);
+    transform-origin:50% 0%; will-change:transform, filter;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.sig-card:last-child{margin-bottom:0;}
+/* bordo a gradiente rotante */
+.sig-card::before{content:''; position:absolute; inset:0; z-index:4; border-radius:inherit; padding:1px; pointer-events:none;
+    background:conic-gradient(from var(--ang,0deg), transparent 0deg, color-mix(in srgb,var(--c1) 80%, transparent) 70deg, color-mix(in srgb,var(--c2) 80%, transparent) 140deg, transparent 210deg, transparent 360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:.9; animation:sig-rot 9s linear infinite;}
+@property --ang{syntax:'<angle>'; inherits:false; initial-value:0deg;}
+@keyframes sig-rot{to{--ang:360deg;}}
+
+/* inner: contiene l'entrata 3D (così non va in conflitto con lo scale di scroll) */
+.sig-card__inner{
+    position:relative; z-index:1; flex:1; display:flex; flex-direction:column; justify-content:flex-end;
+    padding:clamp(26px,5.5vw,56px); padding-bottom:clamp(96px,17vh,150px);
+    opacity:0; transform:translateY(66px) scale(.965);
+    transition:opacity .9s var(--ease), transform 1s var(--ease);
+    will-change:transform;
+}
+.sig-card.is-active .sig-card__inner{opacity:1; transform:none;}
+
+/* tint + grain */
+.sig-card__tint{position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(70% 60% at 80% 12%, color-mix(in srgb,var(--c1) 26%, transparent), transparent 60%),
+              radial-gradient(60% 60% at 12% 92%, color-mix(in srgb,var(--c2) 18%, transparent), transparent 60%);}
+.sig-card__grain{position:absolute; inset:0; z-index:0; opacity:.06; mix-blend-mode:overlay; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ghost number */
+.sig-ghost{position:absolute; top:clamp(-10px,-1vw,2px); right:clamp(8px,2vw,26px); z-index:0; line-height:.8;
+    font-size:clamp(8rem,32vw,19rem); font-weight:700; letter-spacing:-.04em;
+    color:transparent; -webkit-text-stroke:1.5px rgba(244,241,234,.09); pointer-events:none; user-select:none;}
+.sig-no{position:absolute; left:clamp(26px,5.5vw,56px); top:clamp(22px,5vw,46px); z-index:3;
+    font-size:13px; letter-spacing:.18em; color:var(--muted);}
+.sig-no b{color:var(--ink);}
+
+/* IMMAGINE (PNG trasparente) con glow + entrata wipe/3D */
+.sig-art{position:absolute; top:clamp(20px,5vw,52px); right:clamp(14px,4.5vw,48px); z-index:2;
+    width:clamp(150px,33vw,330px); aspect-ratio:1; perspective:1000px; pointer-events:none;
+    animation:sig-float 7s ease-in-out infinite;}
+.sig-art__glow{position:absolute; inset:4%; border-radius:50%;
+    background:radial-gradient(closest-side, color-mix(in srgb,var(--c1) 60%, transparent), transparent 72%);
+    filter:blur(26px); opacity:0; transform:scale(.6); transition:opacity 1s var(--ease) .1s, transform 1.2s var(--ease) .1s;}
+.sig-card.is-active .sig-art__glow{opacity:.95; transform:scale(1);}
+.sig-img{position:relative; z-index:1; width:100%; height:100%; object-fit:contain;
+    filter:drop-shadow(0 20px 30px rgba(0,0,0,.55));
+    opacity:0; transform:rotateY(16deg) scale(1.2); clip-path:inset(0 0 100% 0);
+    transition:opacity 1s var(--ease) .18s, transform 1.15s var(--ease) .18s, clip-path 1.15s var(--ease) .18s;
+    will-change:transform, clip-path;}
+.sig-card.is-active .sig-img{opacity:1; transform:rotateY(0) scale(1); clip-path:inset(0 0 0 0);}
+@keyframes sig-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* content */
+.sig-card__content{position:relative; z-index:3; max-width:min(34rem,92%);}
+.sig-tag{display:inline-flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted); padding:7px 14px; border:1px solid var(--line); border-radius:100px; background:rgba(0,0,0,.3); backdrop-filter:blur(6px);}
+.sig-tag b{width:6px; height:6px; border-radius:50%; background:var(--c1); box-shadow:0 0 10px var(--c1);}
+
+.sig-big{margin-top:18px; font-weight:500; letter-spacing:-.035em; line-height:.95; font-size:clamp(2.6rem,11vw,5.6rem);}
+.sig-line{display:block; overflow:hidden; padding:.02em .06em .14em; margin:-.02em -.06em -.14em;}
+.sig-line i{display:block; font-style:normal; transform:translateY(115%) rotate(4deg); opacity:0;
+    transition:transform .9s var(--ease) .25s, opacity .9s var(--ease) .25s; transition-delay:var(--d,.25s); will-change:transform;}
+.sig-card.is-active .sig-line i{transform:translateY(0) rotate(0); opacity:1;}
+.sig-big em{font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
+    background:linear-gradient(100deg,var(--c1),var(--c2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+
+.sig-rise{opacity:0; transform:translateY(26px); transition:opacity .8s var(--ease) .5s, transform .8s var(--ease) .5s;}
+.sig-card.is-active .sig-rise{opacity:1; transform:translateY(0);}
+.sig-lead{margin-top:18px; font-size:clamp(1rem,1.5vw,1.25rem); line-height:1.55; color:var(--muted); font-weight:300; max-width:40ch;}
+.sig-chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
+.sig-chip{font-size:13px; font-weight:500; padding:9px 15px; border-radius:100px;
+    border:1px solid color-mix(in srgb,var(--c1) 45%, transparent); color:color-mix(in srgb,var(--c1) 88%, #fff);
+    background:color-mix(in srgb,var(--c1) 10%, transparent);}
+
+/* responsive */
+@media (max-width:560px){
+    .sig-card__inner{padding-bottom:clamp(70px,12vh,120px);}
+    .sig-art{width:48vw; top:clamp(40px,12vw,72px); right:12px;}
+    .sig-big{font-size:clamp(2.6rem,12vw,3.7rem);}
+    .sig-intro h2{font-size:clamp(2.1rem,9vw,3.2rem);}
+    .sig-card__content{max-width:100%;}
+    .sig-lead{max-width:100%;}
+}
+@media (prefers-reduced-motion:reduce){
+    .sig-card::before,.sig-art,.sig-intro h2 em{animation:none !important;}
+    .sig-card__inner,.sig-line i,.sig-rise,.sig-rv{opacity:1 !important; transform:none !important;}
+    .sig-img{opacity:1 !important; transform:none !important; clip-path:none !important;}
+    .sig-art__glow{opacity:.8 !important; transform:none !important;}
+    .sig-card{transform:none !important; filter:none !important;}
+}
+</style>
+
+<section class="sig" id="sigRoot">
+    <div class="sig-beam"></div>
+
+    <div class="sig-intro">
+        <div class="sig-eyebrow sig-rv">La nostra firma</div>
+        <h2 class="sig-rv">Quattro regole. <em>Zero compromessi.</em></h2>
+        <p class="sig-rv">Il nostro gelato nasce da un metodo preciso, ripetuto ogni giorno con la stessa
+            ossessione per la qualit&agrave;. Scorri per scoprirlo.</p>
+    </div>
+
+    <div class="sig-stack">
+
+        <!-- CARD 01 — ▼ sostituisci src con l'URL del media -->
+        <article class="sig-card" style="--c1:#FFC53D;--c2:#FF8A3D">
+            <div class="sig-card__inner">
+                <div class="sig-card__tint"></div><div class="sig-card__grain"></div>
+                <span class="sig-ghost">1</span>
+                <div class="sig-no"><b>01</b> / 04</div>
+                <div class="sig-art"><span class="sig-art__glow"></span>
+                    <img class="sig-img" src="mantecato a freddo.png" alt="Mantecato a freddo" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="sig-card__content">
+                    <span class="sig-tag"><b></b> Metodo</span>
+                    <h3 class="sig-big">
+                        <span class="sig-line"><i style="--d:.28s">Mantecato</i></span>
+                        <span class="sig-line"><i style="--d:.4s">a <em>freddo</em></i></span>
+                    </h3>
+                    <p class="sig-lead sig-rise">Lavorato lentamente a bassa temperatura: aria minima, cremosit&agrave; massima. Si scioglie in bocca, non nel bicchiere.</p>
+                    <div class="sig-chips sig-rise"><span class="sig-chip">&minus;18&deg;C</span><span class="sig-chip">Aria &lt; 30%</span><span class="sig-chip">Fresco ogni giorno</span></div>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 02 -->
+        <article class="sig-card" style="--c1:#FF4D6D;--c2:#FF8A3D">
+            <div class="sig-card__inner">
+                <div class="sig-card__tint"></div><div class="sig-card__grain"></div>
+                <span class="sig-ghost">2</span>
+                <div class="sig-no"><b>02</b> / 04</div>
+                <div class="sig-art"><span class="sig-art__glow"></span>
+                    <img class="sig-img" src="frutta di stagione.png" alt="Frutta di stagione" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="sig-card__content">
+                    <span class="sig-tag"><b></b> Materia prima</span>
+                    <h3 class="sig-big">
+                        <span class="sig-line"><i style="--d:.28s">Frutta</i></span>
+                        <span class="sig-line"><i style="--d:.4s">di <em>stagione</em></i></span>
+                    </h3>
+                    <p class="sig-lead sig-rise">Solo frutta fresca scelta ogni mattina e materie prime selezionate. Quello che cambia fuori, lo senti dentro.</p>
+                    <div class="sig-chips sig-rise"><span class="sig-chip">100% naturale</span><span class="sig-chip">Filiera corta</span><span class="sig-chip">Km zero</span></div>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 03 -->
+        <article class="sig-card" style="--c1:#7FE0A8;--c2:#3FC9C0">
+            <div class="sig-card__inner">
+                <div class="sig-card__tint"></div><div class="sig-card__grain"></div>
+                <span class="sig-ghost">3</span>
+                <div class="sig-no"><b>03</b> / 04</div>
+                <div class="sig-art"><span class="sig-art__glow"></span>
+                    <img class="sig-img" src="zero conservanti.png" alt="Zero conservanti" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="sig-card__content">
+                    <span class="sig-tag"><b></b> Purezza</span>
+                    <h3 class="sig-big">
+                        <span class="sig-line"><i style="--d:.28s">Zero</i></span>
+                        <span class="sig-line"><i style="--d:.4s"><em>conservanti</em></i></span>
+                    </h3>
+                    <p class="sig-lead sig-rise">Niente coloranti, niente additivi artificiali. Solo ingredienti che sai pronunciare. Gusto vero, lista corta.</p>
+                    <div class="sig-chips sig-rise"><span class="sig-chip">0 additivi</span><span class="sig-chip">Senza coloranti</span><span class="sig-chip">Opzioni vegane</span></div>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 04 -->
+        <article class="sig-card" style="--c1:#C9A26A;--c2:#8A5A2B">
+            <div class="sig-card__inner">
+                <div class="sig-card__tint"></div><div class="sig-card__grain"></div>
+                <span class="sig-ghost">4</span>
+                <div class="sig-no"><b>04</b> / 04</div>
+                <div class="sig-art"><span class="sig-art__glow"></span>
+                    <img class="sig-img" src="ricette di famiglia.png" alt="Ricette di famiglia" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="sig-card__content">
+                    <span class="sig-tag"><b></b> Eredit&agrave;</span>
+                    <h3 class="sig-big">
+                        <span class="sig-line"><i style="--d:.28s">Ricette</i></span>
+                        <span class="sig-line"><i style="--d:.4s">di <em>famiglia</em></i></span>
+                    </h3>
+                    <p class="sig-lead sig-rise">Tramandate dal 1998 e perfezionate ogni giorno dalle stesse mani. La tecnica cambia, la passione no.</p>
+                    <div class="sig-chips sig-rise"><span class="sig-chip">Dal 1998</span><span class="sig-chip">Fatto a mano</span><span class="sig-chip">3 generazioni</span></div>
+                </div>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<script>
+(function(){
+    'use strict';
+    var root=document.getElementById('sigRoot');
+    if(!root||root.dataset.init) return; root.dataset.init='1';
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var cards=Array.prototype.slice.call(root.querySelectorAll('.sig-card'));
+    var rvs  =Array.prototype.slice.call(root.querySelectorAll('.sig-rv, .sig-eyebrow'));
+
+    if(reduce || !('IntersectionObserver' in window)){
+        root.classList.add('is-in');
+        rvs.forEach(function(e){e.classList.add('in');});
+        cards.forEach(function(c){c.classList.add('is-active');});
+    } else {
+        /* beam una volta sola */
+        var ioRoot=new IntersectionObserver(function(es){
+            es.forEach(function(e){ if(e.isIntersecting){ root.classList.add('is-in'); ioRoot.disconnect(); } });
+        },{threshold:.06});
+        ioRoot.observe(root);
+
+        /* intro */
+        var ioRv=new IntersectionObserver(function(es){
+            es.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('in'); });
+        },{threshold:.3});
+        rvs.forEach(function(e){ ioRv.observe(e); });
+
+        /* card: entrata + reveal quando ben visibili */
+        var ioCard=new IntersectionObserver(function(es){
+            es.forEach(function(e){ e.target.classList.toggle('is-active', e.isIntersecting && e.intersectionRatio>0.4); });
+        },{threshold:[0,0.4,0.75]});
+        cards.forEach(function(c){ ioCard.observe(c); });
+
+        /* stacking: scale + dim + blur della card coperta */
+        var ticking=false;
+        function update(){
+            var vh=window.innerHeight||1;
+            for(var i=0;i<cards.length;i++){
+                var next=cards[i+1];
+                if(!next){ cards[i].style.transform=''; cards[i].style.filter=''; continue; }
+                var top=next.getBoundingClientRect().top;
+                var p=Math.min(Math.max(1-top/vh,0),1);
+                cards[i].style.transform='scale('+(1-p*0.12)+')';
+                cards[i].style.filter='brightness('+(1-p*0.45)+') blur('+(p*2.4)+'px)';
+            }
+            ticking=false;
+        }
+        function onScroll(){ if(ticking)return; ticking=true; requestAnimationFrame(update); }
+        window.addEventListener('scroll', onScroll, {passive:true});
+        window.addEventListener('resize', onScroll, {passive:true});
+        update();
+    }
+})();
+</script>

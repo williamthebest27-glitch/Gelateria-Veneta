@@ -1,0 +1,332 @@
+<!-- ============================================================= -->
+<!--  SEZIONE "I NOSTRI GUSTI" — SCROLL ORIZZONTALE + HOVER VIVO   -->
+<!--  Card che si ingrandiscono e si illuminano al mouse,           -->
+<!--  titolo con lettere 3D + hover, foto reali che ruotano.        -->
+<!--  Elementor: widget HTML Custom. CSS namespacizzato in .gx      -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+.gx{
+    --bg:#08080a; --ink:#F4F1EA; --muted:rgba(244,241,234,.6); --line:rgba(244,241,234,.14);
+    --accent:#FFC53D; --glow-a:#FF4D6D; --glow-b:#FF8A3D;
+    --ease:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.34,1.45,.5,1); --pad:clamp(20px,4vw,64px);
+    position:relative; background:var(--bg); color:var(--ink);
+    /* full-bleed edge-to-edge in Elementor */
+    width:100vw; max-width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; isolation:isolate;
+}
+.gx *{box-sizing:border-box; margin:0; padding:0;}
+
+.gx::before{content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+        radial-gradient(50% 40% at 15% 20%, color-mix(in srgb,var(--glow-a) 18%, transparent), transparent 70%),
+        radial-gradient(50% 40% at 85% 80%, color-mix(in srgb,var(--glow-b) 16%, transparent), transparent 70%);}
+
+/* ---- scroll driver ---- */
+.gx-wrap{position:relative; height:360vh; z-index:1;}
+.gx-sticky{position:sticky; top:0; height:100vh; overflow:hidden; display:flex; flex-direction:column; justify-content:center;}
+
+/* ---- heading ---- */
+.gx-head{position:absolute; top:clamp(26px,5vh,60px); left:var(--pad); right:var(--pad); z-index:5;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px; pointer-events:none;}
+.gx-eyebrow{font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:0;}
+.gx-eyebrow span{display:inline-block; opacity:0; transform:translateY(8px); transition:opacity .7s var(--ease) .1s, transform .7s var(--ease) .1s;}
+.gx-eyebrow::before{content:''; width:0; height:1px; background:var(--accent); margin-right:0; transition:width .8s var(--ease) .15s, margin-right .8s var(--ease) .15s;}
+.gx.head-in .gx-eyebrow::before{width:26px; margin-right:10px;}
+.gx.head-in .gx-eyebrow span{opacity:1; transform:none;}
+
+.gx-title{pointer-events:auto; font-size:clamp(2.2rem,6vw,4.6rem); font-weight:500; letter-spacing:-.03em; line-height:1; perspective:700px; margin-top:6px;}
+.gx-ch{display:inline-block; opacity:0; transform:rotateX(-92deg) translateY(.3em); transform-origin:50% 100%;}
+.gx.head-in .gx-ch{animation:gx-letter .85s var(--ease) forwards; animation-delay:calc(var(--i,0)*.045s);}
+@keyframes gx-letter{to{opacity:1; transform:none;}}
+.gx-ch__in{display:inline-block; transition:transform .35s var(--spring), color .35s var(--ease), text-shadow .35s var(--ease);}
+.gx-title .gx-ch__in:hover{transform:translateY(-.16em) scale(1.32);
+    color:var(--accent); text-shadow:0 0 20px color-mix(in srgb,var(--accent) 80%, transparent), 0 0 46px color-mix(in srgb,var(--glow-b) 50%, transparent);}
+.gx-title em{font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; display:inline-block;
+    background:linear-gradient(100deg,var(--accent),var(--glow-b) 45%,var(--glow-a) 70%,var(--accent)); background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    filter:drop-shadow(0 0 26px color-mix(in srgb,var(--glow-b) 32%, transparent));
+    opacity:0; transform:translateY(.18em) scale(.92);
+    transition:opacity .9s var(--ease) .15s, transform .9s var(--spring) .15s;
+    animation:gx-shine 5.5s linear infinite;}
+.gx.head-in .gx-title em{opacity:1; transform:none;}
+.gx-title em:hover{transform:scale(1.07);}
+@keyframes gx-shine{to{background-position:220% center;}}
+.gx-flourish{display:block; height:3px; width:0; margin-top:.18em; border-radius:3px;
+    background:linear-gradient(90deg,var(--accent),var(--glow-a)); box-shadow:0 0 14px var(--accent);
+    transition:width 1s var(--ease) .55s;}
+.gx.head-in .gx-flourish{width:clamp(70px,9vw,150px);}
+.gx-count{font-size:13px; letter-spacing:.2em; color:var(--muted); white-space:nowrap;}
+.gx-count b{color:var(--ink);}
+
+/* ---- track ---- */
+.gx-track{display:flex; align-items:center; gap:clamp(24px,3vw,52px); padding:0 12vw; will-change:transform;}
+.gx-card{flex:0 0 auto; width:clamp(260px,26vw,360px); will-change:transform;}
+
+/* visible box = inner (così l'hover-scale non confligge con la rotazione JS sull'outer) */
+.gx-card__inner{
+    position:relative; z-index:1;
+    padding:30px 28px 32px; border-radius:26px;
+    border:1px solid var(--line); background:rgba(255,255,255,.035); backdrop-filter:blur(10px);
+    transition:transform .55s var(--spring), box-shadow .5s var(--ease), border-color .5s var(--ease), background .5s var(--ease);
+    will-change:transform;
+}
+.gx-card__inner:hover{
+    transform:scale(1.07) translateY(-14px); z-index:6;
+    border-color:color-mix(in srgb,var(--c1) 75%, transparent);
+    background:rgba(255,255,255,.07);
+    box-shadow:0 38px 74px rgba(0,0,0,.55), 0 0 70px color-mix(in srgb,var(--c1) 30%, transparent);
+}
+.gx-card__inner:hover .gx-halo{opacity:1; transform:scale(1.18);}
+.gx-card__inner:hover .gx-photo{filter:drop-shadow(0 28px 36px rgba(0,0,0,.6)) brightness(1.07) saturate(1.08);}
+.gx-card__inner:hover .gx-name{color:color-mix(in srgb,var(--c1) 90%, #fff);}
+.gx-card__inner:hover .gx-tag{border-color:color-mix(in srgb,var(--c1) 85%, transparent); background:color-mix(in srgb,var(--c1) 14%, transparent);}
+
+.gx-stage{position:relative; height:clamp(220px,24vw,300px); display:flex; align-items:flex-end; justify-content:center;
+    animation:gx-bob 6s ease-in-out infinite;}
+.gx-card:nth-child(2) .gx-stage{animation-delay:-1.2s}
+.gx-card:nth-child(3) .gx-stage{animation-delay:-2.4s}
+.gx-card:nth-child(4) .gx-stage{animation-delay:-3.6s}
+.gx-card:nth-child(5) .gx-stage{animation-delay:-4.8s}
+.gx-card:nth-child(6) .gx-stage{animation-delay:-3s}
+@keyframes gx-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.gx-halo{position:absolute; inset:auto 0 8% 0; height:60%; border-radius:50%;
+    background:radial-gradient(closest-side, color-mix(in srgb,var(--c1) 60%, transparent), transparent 75%);
+    filter:blur(28px); opacity:.85; transition:opacity .5s var(--ease), transform .6s var(--spring);}
+
+/* FOTO GUSTO (PNG trasparente). Ruotano con lo scroll. */
+.gx-photo{position:relative; z-index:1; height:100%; width:auto; max-width:100%; object-fit:contain;
+    pointer-events:none; will-change:transform; filter:drop-shadow(0 18px 26px rgba(0,0,0,.5)); transition:filter .5s var(--ease);}
+
+/* card text */
+.gx-no{font-size:12px; letter-spacing:.2em; color:var(--muted); margin-top:18px;}
+.gx-name{font-size:clamp(1.4rem,2.2vw,1.9rem); font-weight:600; letter-spacing:-.02em; margin-top:6px; line-height:1.05; transition:color .4s var(--ease);}
+.gx-desc{font-size:.95rem; line-height:1.55; color:var(--muted); margin-top:10px; font-weight:300;}
+.gx-foot{margin-top:18px; display:flex; align-items:center; justify-content:flex-start;}
+.gx-tag{font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding:6px 12px; border-radius:100px;
+    border:1px solid color-mix(in srgb,var(--c1) 60%, transparent); color:color-mix(in srgb,var(--c1) 85%, #fff);
+    transition:border-color .4s var(--ease), background .4s var(--ease);}
+
+/* progress + hint */
+.gx-prog{position:absolute; left:var(--pad); right:var(--pad); bottom:clamp(28px,6vh,58px); height:2px; background:var(--line); z-index:5; border-radius:2px; overflow:hidden;}
+.gx-prog i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--glow-a)); box-shadow:0 0 14px var(--accent);}
+.gx-hint{position:absolute; right:var(--pad); bottom:clamp(40px,8vh,74px); z-index:5; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted);}
+
+/* fallback reduced-motion: scroll orizzontale manuale */
+.gx.gx--static .gx-wrap{height:auto;}
+.gx.gx--static .gx-sticky{position:static; height:auto; padding:120px 0 90px;}
+.gx.gx--static .gx-track{transform:none !important; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:24px;}
+.gx.gx--static .gx-card{scroll-snap-align:center; transform:none !important;}
+.gx.gx--static .gx-prog,.gx.gx--static .gx-hint{display:none;}
+
+/* ---- perf su mobile/tablet: via gli effetti costosi durante lo scroll ---- */
+@media (max-width:900px){
+    .gx-card__inner{backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(20,20,25,.55);}
+    .gx-photo{filter:none;}                 /* niente drop-shadow durante il movimento */
+    .gx-halo{filter:blur(20px); opacity:.7;}
+    .gx-stage{animation:none;}              /* meno layer animati */
+    .gx::before{display:none;}
+}
+@media (max-width:640px){
+    .gx-head{flex-direction:column; align-items:flex-start; gap:8px;}
+    .gx-card{width:78vw;}
+}
+@media (prefers-reduced-motion:reduce){
+    .gx-photo,.gx-stage{animation:none !important;}
+    .gx-ch{opacity:1; transform:none; animation:none !important;}
+    .gx-title em,.gx-eyebrow span{opacity:1; transform:none;}
+}
+</style>
+
+<section class="gx" id="gxRoot">
+    <div class="gx-wrap" data-gx-wrap>
+        <div class="gx-sticky">
+            <div class="gx-head">
+                <div>
+                    <div class="gx-eyebrow"><span>Carta dei gusti</span></div>
+                    <h2 class="gx-title">I nostri <em>gusti</em></h2>
+                    <span class="gx-flourish"></span>
+                </div>
+                <div class="gx-count"><b data-gx-cur>01</b> / <span data-gx-tot>06</span></div>
+            </div>
+
+            <div class="gx-track" data-gx-track>
+                <!-- CARD 1 -->
+                <article class="gx-card" style="--c1:#9bbf3f;--c2:#6f9e2e">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/pistacchio.png" alt="Pistacchio di Bronte" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">01 — Classico</div>
+                        <h3 class="gx-name">Pistacchio di Bronte</h3>
+                        <p class="gx-desc">Solo pistacchio DOP, tostato lentamente. Cremoso, intenso, inconfondibile.</p>
+                        <div class="gx-foot"><span class="gx-tag">Bestseller</span></div>
+                    </div>
+                </article>
+                <!-- CARD 2 -->
+                <article class="gx-card" style="--c1:#8a4a2a;--c2:#4a2412">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/cioccolato.png" alt="Cioccolato Fondente" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">02 — Intenso</div>
+                        <h3 class="gx-name">Cioccolato Fondente</h3>
+                        <p class="gx-desc">Cacao monorigine 72%. Avvolgente e profondo, per veri intenditori.</p>
+                        <div class="gx-foot"><span class="gx-tag">Vegano</span></div>
+                    </div>
+                </article>
+                <!-- CARD 3 -->
+                <article class="gx-card" style="--c1:#e23d6d;--c2:#a51d44">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/lampone.png" alt="Lampone e Rosa" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">03 — Fresco</div>
+                        <h3 class="gx-name">Lampone &amp; Rosa</h3>
+                        <p class="gx-desc">Sorbetto di lamponi freschi con un soffio di acqua di rose.</p>
+                        <div class="gx-foot"><span class="gx-tag">Sorbetto</span></div>
+                    </div>
+                </article>
+                <!-- CARD 4 -->
+                <article class="gx-card" style="--c1:#e7d3a6;--c2:#cdb27a">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/fior-di-latte.png" alt="Fior di Latte" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">04 — Tradizione</div>
+                        <h3 class="gx-name">Fior di Latte</h3>
+                        <p class="gx-desc">Latte fresco di montagna. La semplicit&agrave; che conquista al primo assaggio.</p>
+                        <div class="gx-foot"><span class="gx-tag">Classico</span></div>
+                    </div>
+                </article>
+                <!-- CARD 5 -->
+                <article class="gx-card" style="--c1:#ffb13d;--c2:#ef8a12">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/mango.png" alt="Mango e Passion" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">05 — Esotico</div>
+                        <h3 class="gx-name">Mango &amp; Passion</h3>
+                        <p class="gx-desc">Sorbetto di mango maturo e frutto della passione. Pura energia tropicale.</p>
+                        <div class="gx-foot"><span class="gx-tag">Sorbetto</span></div>
+                    </div>
+                </article>
+                <!-- CARD 6 -->
+                <article class="gx-card" style="--c1:#c79a5b;--c2:#9c6e34">
+                    <div class="gx-card__inner">
+                        <div class="gx-stage"><div class="gx-halo"></div>
+                            <img class="gx-photo" src="https://lyamweb.com/wp-content/uploads/2026/06/nocciola.png" alt="Nocciola Piemonte" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div class="gx-no">06 — Goloso</div>
+                        <h3 class="gx-name">Nocciola Piemonte</h3>
+                        <p class="gx-desc">Nocciola IGP tostata artigianalmente. Rotonda, dolce, irresistibile.</p>
+                        <div class="gx-foot"><span class="gx-tag">Bestseller</span></div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="gx-hint">Scorri ↓</div>
+            <div class="gx-prog"><i data-gx-prog></i></div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function(){
+    'use strict';
+    var root = document.getElementById('gxRoot');
+    if(!root || root.dataset.init) return; root.dataset.init='1';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* split del titolo: lettere flip 3D + hover (parola "gusti" resta intera) */
+    var title = root.querySelector('.gx-title');
+    if(title){
+        var idx=0;
+        Array.prototype.slice.call(title.childNodes).forEach(function(n){
+            if(n.nodeType===3){
+                var frag=document.createDocumentFragment();
+                n.nodeValue.split('').forEach(function(ch){
+                    if(ch===' '){ frag.appendChild(document.createTextNode(' ')); }
+                    else { var o=document.createElement('span'); o.className='gx-ch'; o.style.setProperty('--i',idx++);
+                           var s=document.createElement('span'); s.className='gx-ch__in'; s.textContent=ch; o.appendChild(s); frag.appendChild(o); }
+                });
+                title.replaceChild(frag,n);
+            }
+        });
+    }
+    /* reveal del titolo quando la sezione entra */
+    if('IntersectionObserver' in window){
+        var ioHead=new IntersectionObserver(function(es){
+            es.forEach(function(e){ if(e.isIntersecting){ root.classList.add('head-in'); ioHead.disconnect(); } });
+        },{threshold:.12});
+        ioHead.observe(root);
+    } else { root.classList.add('head-in'); }
+
+    var wrap  = root.querySelector('[data-gx-wrap]');
+    var track = root.querySelector('[data-gx-track]');
+    var progE = root.querySelector('[data-gx-prog]');
+    var curE  = root.querySelector('[data-gx-cur]');
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.gx-card'));
+    var gelati= Array.prototype.slice.call(track.querySelectorAll('.gx-photo'));
+
+    if(reduce){ root.classList.add('gx--static','head-in'); return; }
+
+    /* misure precalcolate: niente layout-read per frame (zero jank) */
+    var maxX=0, wrapTop=0, dist=1, cardData=[], vw=window.innerWidth;
+    function measure(){
+        vw = window.innerWidth;
+        maxX = Math.max(0, track.scrollWidth - vw);
+        wrapTop = wrap.getBoundingClientRect().top + (window.scrollY||window.pageYOffset);
+        dist = (wrap.offsetHeight - window.innerHeight) || 1;
+        cardData = cards.map(function(c){ return {l:c.offsetLeft, w:c.offsetWidth}; });
+    }
+    function targetX(){
+        var sy = window.scrollY||window.pageYOffset;
+        var p = Math.min(Math.max((sy - wrapTop)/dist, 0), 1);
+        return maxX * p;
+    }
+
+    /* loop con smoothing (lerp) -> movimento morbido e fluido */
+    var curX=0, tgtX=0, running=false;
+    function frame(){
+        curX += (tgtX - curX) * 0.12;
+        var settled = Math.abs(tgtX - curX) < 0.15;
+        if(settled) curX = tgtX;
+        track.style.transform = 'translate3d(' + (-curX) + 'px,0,0)';
+        if(progE) progE.style.width = (maxX ? (curX/maxX*100) : 0) + '%';
+
+        var cx = vw/2, active=0, best=1e9;
+        for(var i=0;i<cardData.length;i++){
+            var center = cardData[i].l + cardData[i].w/2 - curX;
+            var d = (center - cx) / vw;
+            var dd = d<-1?-1:(d>1?1:d);
+            cards[i].style.transform = 'rotate(' + (dd*9) + 'deg) translateY(' + (Math.abs(d)*22) + 'px)';
+            if(gelati[i]) gelati[i].style.transform = 'rotate(' + (-d*16) + 'deg) scale(' + (1 - Math.abs(d)*0.12) + ')';
+            var ad = Math.abs(center - cx);
+            if(ad < best){ best = ad; active = i; }
+        }
+        if(curE) curE.textContent = ('0'+(active+1)).slice(-2);
+
+        if(running && !settled){ requestAnimationFrame(frame); } else { running = false; }
+    }
+    function start(){ if(!running){ running=true; requestAnimationFrame(frame); } }
+
+    measure();
+    window.addEventListener('scroll', function(){ tgtX = targetX(); start(); }, {passive:true});
+    window.addEventListener('resize', function(){ measure(); tgtX = targetX(); start(); }, {passive:true});
+    /* (ri)misura dopo il caricamento di font/immagini per posizioni precise */
+    window.addEventListener('load', function(){ measure(); tgtX = targetX(); start(); });
+
+    /* gira solo quando la sezione e' in vista */
+    if('IntersectionObserver' in window){
+        var ioRun=new IntersectionObserver(function(es){
+            es.forEach(function(e){ if(e.isIntersecting){ tgtX=targetX(); start(); } });
+        },{threshold:0});
+        ioRun.observe(wrap);
+    }
+
+    tgtX = targetX(); curX = tgtX; start();
+})();
+</script>

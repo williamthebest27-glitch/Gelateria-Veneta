@@ -1,0 +1,452 @@
+<!-- ============================================================
+     SEZIONE "I NOSTRI GUSTI" — Gelateria artigianale (premium)
+     HTML + CSS + JS in un unico blocco per Elementor (widget HTML)
+     - GSAP + ScrollTrigger: usati SOLO se già presenti nel sito
+     - 1 timeline, 1 ScrollTrigger (header) | IntersectionObserver (card)
+     - Animazioni solo GPU: transform (translate3d/scale) + opacity
+============================================================ -->
+<section class="gelato-flavors" id="gelato-flavors" aria-labelledby="gf-title">
+  <div class="gf-container">
+
+    <!-- ── Intestazione ─────────────────────────────────────── -->
+    <header class="gf-head">
+      <span class="gf-eyebrow">I Nostri Gusti</span>
+      <h2 class="gf-title" id="gf-title">
+        Venti gusti. <em class="is-amber">Zero</em> <em class="is-orange">conservanti.</em>
+      </h2>
+      <p class="gf-sub">
+        Ogni gusto nasce da materie prime selezionate e mantecato fresco ogni
+        giorno. Scorri e scegli il tuo preferito.
+      </p>
+    </header>
+
+    <!-- ── Griglia card (popolata via JS, nessun markup duplicato) ── -->
+    <div class="gf-grid" id="gf-grid" role="list"></div>
+
+  </div>
+</section>
+
+<style>
+/* ============================================================
+   1. TEMA / VARIABILI  (colori e font ricavati dall'immagine)
+============================================================ */
+.gelato-flavors{
+  /* Palette */
+  --bg-deep:#0a0608;
+  --bg-wine:#160c0e;
+  --glow-wine:#2a1418;
+  --glow-plum:#20121a;
+  --amber:#f4a82c;
+  --orange:#ef7e1f;
+  --cream:#f6efe7;
+  --text:#f3ede7;
+  --muted:#9b8f93;
+  --line:rgba(255,255,255,.07);
+
+  /* Font (caricati via @import qui sotto) */
+  --font-serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Timing */
+  --ease-hover:cubic-bezier(.25,.8,.25,1);
+  --ease-reveal:cubic-bezier(.16,.84,.44,1);
+  --dur-micro:.35s;
+
+  position:relative;
+  isolation:isolate;
+  color:var(--text);
+  font-family:var(--font-sans);
+  background:
+    radial-gradient(120% 85% at 12% -5%, var(--glow-wine) 0%, transparent 55%),
+    radial-gradient(100% 70% at 88% 8%, var(--glow-plum) 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg-wine) 0%, var(--bg-deep) 100%);
+  overflow:clip;
+}
+/* Import font: caricato una sola volta, non blocca il rendering */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+.gelato-flavors *{box-sizing:border-box;}
+
+/* Texture CSS molto leggera (statica, nessuna particella) */
+.gelato-flavors::before{
+  content:"";
+  position:absolute; inset:0; z-index:-1;
+  pointer-events:none;
+  opacity:.035;
+  mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   2. LAYOUT / CONTENITORE
+============================================================ */
+.gf-container{
+  max-width:1280px;
+  margin-inline:auto;
+  padding:clamp(64px,8vw,120px) clamp(20px,5vw,72px);
+}
+
+/* ============================================================
+   3. INTESTAZIONE  (gerarchia tipografica come nell'immagine)
+============================================================ */
+.gf-head{ max-width:780px; margin-bottom:clamp(40px,5vw,72px); }
+
+.gf-eyebrow{
+  display:inline-flex; align-items:center; gap:.8em;
+  color:var(--amber);
+  font-size:.72rem; font-weight:600;
+  letter-spacing:.26em; text-transform:uppercase;
+}
+.gf-eyebrow::before{
+  content:""; width:34px; height:1px;
+  background:currentColor; opacity:.7;
+}
+
+.gf-title{
+  margin:.5em 0 .35em;
+  font-family:var(--font-serif);
+  font-weight:600;
+  font-size:clamp(2.6rem,6vw,5.2rem);
+  line-height:.98;
+  letter-spacing:-.01em;
+  color:var(--cream);
+}
+.gf-title em{ font-style:italic; font-weight:500; }
+.gf-title .is-amber{ color:var(--amber); }
+.gf-title .is-orange{ color:var(--orange); }
+
+.gf-sub{
+  margin:0;
+  max-width:46ch;
+  color:var(--muted);
+  font-size:clamp(1rem,1.2vw,1.12rem);
+  line-height:1.6;
+}
+
+/* ============================================================
+   4. GRIGLIA  (4 col desktop · 2 tablet · 1 mobile)
+============================================================ */
+.gf-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:clamp(16px,1.8vw,28px);
+}
+@media (max-width:1024px){ .gf-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px){  .gf-grid{ grid-template-columns:1fr; } }
+
+/* ============================================================
+   5. CARD
+   - .flv-card  → wrapper: gestisce SOLO il reveal (translate+opacity)
+   - .flv-card__inner → gestisce SOLO l'hover (lift/rotate + bordo)
+   Separare i due livelli evita conflitti tra le transizioni.
+============================================================ */
+.flv-card{
+  /* Stato iniziale del reveal (gestito da IntersectionObserver) */
+  opacity:0;
+  transform:translate3d(0,30px,0) scale(.985);
+  transition:
+    opacity .7s var(--ease-reveal),
+    transform .7s var(--ease-reveal);
+}
+.flv-card.is-visible{
+  opacity:1;
+  transform:translate3d(0,0,0) scale(1);
+}
+
+.flv-card__inner{
+  position:relative;
+  height:100%;
+  display:flex; flex-direction:column;
+  border-radius:22px;
+  border:1px solid var(--line);
+  /* Effetto vetro leggero simulato con gradient traslucidi (perf-friendly) */
+  background:
+    linear-gradient(165deg, rgba(255,255,255,.06), rgba(255,255,255,.015)),
+    rgba(22,12,14,.55);
+  box-shadow:0 14px 34px -16px rgba(0,0,0,.7); /* ombra morbida, statica */
+  overflow:hidden;
+  transform:translate3d(0,0,0);
+  transition:transform var(--dur-micro) var(--ease-hover);
+  /* backdrop-filter:blur(8px);  ← attiva per vero effetto vetro
+     (impatta le performance con molte card) */
+}
+
+/* Bordo che si illumina: pseudo-elemento con gradient, animato in opacity */
+.flv-card__inner::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg, rgba(244,168,44,.75), rgba(239,126,31,.3) 45%, transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:0;
+  transition:opacity var(--dur-micro) var(--ease-hover);
+  pointer-events:none;
+}
+
+/* ── Media / immagine ── */
+.flv-card__media{
+  position:relative;
+  aspect-ratio:4/3;
+  display:grid; place-items:center;
+  /* Spotlight morbido dietro al PNG */
+  background:radial-gradient(circle at 50% 38%, rgba(244,168,44,.14), transparent 68%);
+}
+.flv-card__img{
+  width:78%; height:78%;
+  object-fit:contain;
+  transform:translate3d(0,0,0) scale(1);
+  transition:transform var(--dur-micro) var(--ease-hover);
+}
+
+/* ── Badge ── */
+.flv-card__badge{
+  position:absolute; top:14px; left:14px;
+  padding:.34em .8em;
+  font-size:.68rem; font-weight:600;
+  letter-spacing:.04em;
+  border-radius:999px;
+  color:var(--amber);
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(244,168,44,.25);
+  transition:color var(--dur-micro) var(--ease-hover),
+             background var(--dur-micro) var(--ease-hover);
+}
+
+/* ── Testo ── */
+.flv-card__body{
+  display:flex; flex-direction:column; gap:.55rem;
+  padding:clamp(16px,1.4vw,22px);
+}
+.flv-card__head{ display:flex; align-items:center; gap:.55rem; }
+.flv-card__icon{
+  flex:0 0 auto;
+  display:grid; place-items:center;
+  width:30px; height:30px;
+  border-radius:9px;
+  color:var(--amber);
+  background:rgba(244,168,44,.1);
+  transition:color var(--dur-micro) var(--ease-hover);
+}
+.flv-card__icon svg{ width:18px; height:18px; }
+.flv-card__title{
+  margin:0;
+  font-family:var(--font-serif);
+  font-weight:600;
+  font-size:clamp(1.05rem,1.3vw,1.25rem);
+  line-height:1.15;
+  color:var(--cream);
+}
+.flv-card__desc{
+  margin:0;
+  color:var(--muted);
+  font-size:.9rem; line-height:1.5;
+}
+.flv-card__ingredients{
+  margin:.2rem 0 0;
+  padding-top:.7rem;
+  border-top:1px solid var(--line);
+  color:#7f757a;
+  font-size:.8rem; line-height:1.45;
+}
+.flv-card__ingredients b{
+  display:block;
+  margin-bottom:.2em;
+  color:var(--amber);
+  font-weight:600;
+  font-size:.68rem;
+  letter-spacing:.12em; text-transform:uppercase;
+}
+
+/* ============================================================
+   6. HOVER  (elegante, microinterazioni — durata 0.35s)
+============================================================ */
+@media (hover:hover){
+  .flv-card:hover .flv-card__inner{
+    transform:translate3d(0,-6px,0) rotate(-1.2deg); /* lift + rotazione < 2° */
+  }
+  .flv-card:hover .flv-card__inner::after{ opacity:1; }      /* bordo illuminato */
+  .flv-card:hover .flv-card__img{ transform:translate3d(0,0,0) scale(1.05); } /* zoom 1.05 */
+  .flv-card:hover .flv-card__badge{
+    color:#1a0e0e;
+    background:linear-gradient(135deg,var(--amber),var(--orange)); /* badge cambia colore */
+  }
+  .flv-card:hover .flv-card__icon{ color:var(--orange); }
+}
+
+/* ============================================================
+   7. ACCESSIBILITÀ — riduzione del movimento
+============================================================ */
+@media (prefers-reduced-motion:reduce){
+  .gelato-flavors *{
+    transition:none !important;
+    animation:none !important;
+  }
+  .flv-card{ opacity:1; transform:none; }
+}
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  const root = document.getElementById("gelato-flavors");
+  const grid = document.getElementById("gf-grid");
+  if (!root || !grid) return;
+
+  /* ----------------------------------------------------------
+     0. Configurazione percorso immagini
+     I file devono chiamarsi image1.png … image20.png.
+     Se sono nella Libreria Media di Elementor, imposta qui l'URL
+     base completo (es. "/wp-content/uploads/2026/06/").
+  ---------------------------------------------------------- */
+  const IMG_BASE = ""; // "" = stessa cartella della pagina
+
+  /* ----------------------------------------------------------
+     1. Icone SVG (line, ereditano currentColor) per categoria
+  ---------------------------------------------------------- */
+  const ICONS = {
+    crema:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 10.5h11l-1.3 8a2 2 0 0 1-2 1.7H9.8a2 2 0 0 1-2-1.7z"/><path d="M7.5 10.5a4.5 4.5 0 0 1 9 0"/></svg>',
+    frutta:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-3.3 0-6-2.8-6-6.5C6 10 9 7 12 7s6 3 6 7.5C18 18.2 15.3 21 12 21z"/><path d="M12 7c0-2 1-3.2 3-4"/></svg>',
+    cioccolato:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="1.5"/><path d="M5 10h14M5 14.5h14M10 5v14M14 5v14"/></svg>',
+    caffe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h11v3.5a5 5 0 0 1-10 0z"/><path d="M16 9.5h2a2.2 2.2 0 0 1 0 4.4h-2"/><path d="M8 4c-.4.8.4 1.2 0 2M11.5 4c-.4.8.4 1.2 0 2"/></svg>',
+    "frutta-secca":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 2 5.2 5.2 5.2 9.2 0 4-2.6 7.3-5.2 7.3s-5.2-3.3-5.2-7.3c0-4 2-7.2 5.2-9.2z"/><path d="M12 6c-1.6 3.2-1.6 9.4 0 14"/></svg>'
+  };
+
+  /* ----------------------------------------------------------
+     2. Dati dei gusti (singola fonte → nessun markup duplicato)
+  ---------------------------------------------------------- */
+  const FLAVORS = [
+    { t:"Pistacchio di Bronte",  cat:"frutta-secca", badge:"Bestseller", d:"Pasta pura di pistacchio verde, mantecata senza coloranti.", i:"Pistacchio di Bronte DOP, latte fresco, zucchero." },
+    { t:"Cioccolato Fondente 70%", cat:"cioccolato", badge:"",          d:"Cacao monorigine fuso lentamente per una crema intensa.",     i:"Cacao 70%, latte, zucchero di canna." },
+    { t:"Vaniglia del Madagascar", cat:"crema",      badge:"",          d:"Bacche di vaniglia bourbon in infusione nel latte intero.",   i:"Vaniglia bourbon, panna, tuorlo." },
+    { t:"Nocciola Piemonte IGP", cat:"frutta-secca", badge:"Bio",       d:"Nocciole tostate a bassa temperatura, gusto rotondo.",        i:"Nocciola Piemonte IGP, latte, zucchero." },
+    { t:"Fragola di Sicilia",    cat:"frutta",       badge:"Vegano",    d:"Solo frutta matura, senza latte e senza conservanti.",        i:"Fragole fresche, acqua, zucchero, limone." },
+    { t:"Stracciatella",         cat:"crema",        badge:"",          d:"Fior di latte con cascata di cioccolato fondente croccante.", i:"Latte fresco, panna, cioccolato fondente." },
+    { t:"Caffè Espresso",        cat:"caffe",        badge:"",          d:"Estratto di arabica per una nota intensa e avvolgente.",      i:"Caffè arabica, latte, zucchero." },
+    { t:"Limone di Amalfi",      cat:"frutta",       badge:"Vegano",    d:"Sorbetto agrumato e brillante dalla costiera amalfitana.",    i:"Limoni di Amalfi IGP, acqua, zucchero." },
+    { t:"Mango e Passion Fruit", cat:"frutta",       badge:"Novità",    d:"Sorbetto tropicale, dolce e leggermente acidulo.",            i:"Mango, passion fruit, acqua, zucchero." },
+    { t:"Cocco",                 cat:"frutta",       badge:"Vegano",    d:"Polpa di cocco frullata, cremosità naturale e vellutata.",    i:"Cocco, acqua, zucchero." },
+    { t:"Tiramisù",              cat:"crema",        badge:"Bestseller",d:"Mascarpone, savoiardi e caffè nella ricetta della tradizione.",i:"Mascarpone, caffè, savoiardi, cacao." },
+    { t:"Caramello Salato",      cat:"crema",        badge:"",          d:"Caramello cotto a fuoco lento con un tocco di sale marino.",  i:"Zucchero caramellato, panna, sale marino." },
+    { t:"Lampone",               cat:"frutta",       badge:"Vegano",    d:"Sorbetto vivace dal colore intenso e dal gusto pieno.",       i:"Lamponi, acqua, zucchero." },
+    { t:"Menta e Cioccolato",    cat:"cioccolato",   badge:"",          d:"Menta fresca in infusione con scaglie di fondente.",          i:"Menta fresca, latte, cioccolato fondente." },
+    { t:"Ricotta e Fichi",       cat:"crema",        badge:"Novità",    d:"Ricotta di pecora con confettura di fichi caramellati.",      i:"Ricotta, fichi, miele, latte." },
+    { t:"Yogurt e Mirtilli",     cat:"crema",        badge:"Bio",       d:"Yogurt intero con variegatura di mirtilli selvatici.",        i:"Yogurt, mirtilli, zucchero." },
+    { t:"Zuppa Inglese",         cat:"crema",        badge:"",          d:"Crema e cacao con alchermes secondo la ricetta classica.",    i:"Crema pasticcera, cacao, alchermes." },
+    { t:"Torroncino",            cat:"frutta-secca", badge:"",          d:"Croccante di mandorle e miele dentro una crema delicata.",    i:"Mandorle, miele, latte, zucchero." },
+    { t:"Cassata Siciliana",     cat:"crema",        badge:"",          d:"Ricotta, canditi e cioccolato come in pasticceria.",          i:"Ricotta, canditi, pistacchio, cioccolato." },
+    { t:"Bacio Gianduia",        cat:"frutta-secca", badge:"Bestseller",d:"Gianduia di nocciole e cacao con cuore fondente.",            i:"Nocciole, cacao, latte, zucchero." }
+  ];
+
+  /* ----------------------------------------------------------
+     3. Render delle card (un solo template, zero duplicazioni)
+  ---------------------------------------------------------- */
+  const frag = document.createDocumentFragment();
+
+  FLAVORS.forEach(function (f, idx) {
+    const n = idx + 1;
+    const card = document.createElement("article");
+    card.className = "flv-card";
+    card.setAttribute("role", "listitem");
+    card.setAttribute("aria-label", "Gelato al " + f.t);
+
+    const badge = f.badge
+      ? '<span class="flv-card__badge">' + f.badge + "</span>"
+      : "";
+
+    card.innerHTML =
+      '<div class="flv-card__inner">' +
+        '<div class="flv-card__media">' +
+          badge +
+          '<img class="flv-card__img" src="' + IMG_BASE + "image" + n + '.png" ' +
+               'alt="Gelato artigianale al ' + f.t + '" loading="lazy" decoding="async">' +
+        "</div>" +
+        '<div class="flv-card__body">' +
+          '<div class="flv-card__head">' +
+            '<span class="flv-card__icon" aria-hidden="true">' + (ICONS[f.cat] || ICONS.crema) + "</span>" +
+            '<h3 class="flv-card__title">' + f.t + "</h3>" +
+          "</div>" +
+          '<p class="flv-card__desc">' + f.d + "</p>" +
+          '<p class="flv-card__ingredients"><b>Ingredienti</b>' + f.i + "</p>" +
+        "</div>" +
+      "</div>";
+
+    frag.appendChild(card);
+  });
+
+  grid.appendChild(frag);
+
+  /* ----------------------------------------------------------
+     4. Rispetto di prefers-reduced-motion
+  ---------------------------------------------------------- */
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cards = grid.querySelectorAll(".flv-card");
+
+  if (reduce) {
+    cards.forEach(function (c) { c.classList.add("is-visible"); });
+    return; // niente animazioni
+  }
+
+  /* ----------------------------------------------------------
+     5. ENTRATA HEADER → 1 sola timeline + 1 solo ScrollTrigger
+        (solo se GSAP è già caricato globalmente sul sito)
+  ---------------------------------------------------------- */
+  if (window.gsap) {
+    const head = root.querySelector(".gf-head");
+    const opts = { defaults: { ease: "power3.out" } };
+
+    if (window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      opts.scrollTrigger = { trigger: head, start: "top 82%", once: true };
+    }
+
+    gsap.timeline(opts)
+      .from(root.querySelector(".gf-eyebrow"), { y: 18, opacity: 0, duration: .5 })
+      .from(root.querySelector(".gf-title"),   { y: 28, opacity: 0, duration: .7 }, "-=.25")
+      .from(root.querySelector(".gf-sub"),     { y: 20, opacity: 0, duration: .6 }, "-=.4");
+  }
+
+  /* ----------------------------------------------------------
+     6. ENTRATA CARD → IntersectionObserver (mai tutte e 20 insieme)
+        Reveal in CSS (transform+opacity GPU) con stagger sul gruppo
+        che entra nello stesso frame. will-change solo durante il reveal.
+  ---------------------------------------------------------- */
+  let queue = [];
+  let scheduled = false;
+
+  function flush() {
+    queue.forEach(function (el, i) {
+      el.style.willChange = "transform, opacity";   // attivato ora…
+      el.style.transitionDelay = (i * 0.07) + "s";   // stagger del gruppo
+
+      el.addEventListener("transitionend", function te(e) {
+        if (e.propertyName !== "transform") return;
+        el.style.willChange = "auto";                // …e rimosso a fine reveal
+        el.style.transitionDelay = "0s";
+        el.removeEventListener("transitionend", te);
+      });
+
+      el.classList.add("is-visible");
+    });
+    queue = [];
+    scheduled = false;
+  }
+
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      queue.push(entry.target);
+      io.unobserve(entry.target);          // animazione una sola volta
+      if (!scheduled) {
+        scheduled = true;
+        requestAnimationFrame(flush);      // batch dei reveal contemporanei
+      }
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+
+  cards.forEach(function (c) { io.observe(c); });
+})();
+</script>

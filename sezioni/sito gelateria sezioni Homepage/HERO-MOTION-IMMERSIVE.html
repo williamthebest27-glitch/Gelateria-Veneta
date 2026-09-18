@@ -1,0 +1,510 @@
+<!-- ============================================================= -->
+<!--  HERO IMMERSIVA "MOTION"  —  ELEMENTOR READY                   -->
+<!--  Incolla TUTTO questo blocco in un widget "HTML Custom".       -->
+<!--  CSS namespacizzato in .ms-hero (zero conflitti col tema WP).  -->
+<!--  Sostituisci il path del video con quello della Libreria Media -->
+<!--  (vedi commento <video> piu' sotto).                           -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Cinzel:wght@500;600;700&display=swap');
+
+/* ---------- Tokens (scoped) ---------- */
+.ms-hero{
+    --bg:#08080a;
+    --ink:#F4F1EA;
+    --muted:rgba(244,241,234,.62);
+    --line:rgba(244,241,234,.16);
+    --accent:#FFC53D;          /* amber / cream gold */
+    --glow-a:#FF4D6D;          /* raspberry          */
+    --glow-b:#FF8A3D;          /* mango              */
+    --ease:cubic-bezier(.16,1,.3,1);
+    --easeOut:cubic-bezier(.22,.61,.36,1);
+    --pad: clamp(20px, 4vw, 64px);
+
+    position:relative;
+    height:100vh;
+    height:100svh;
+    min-height:640px;
+    /* full-bleed: esce dal contenitore di Elementor e va edge-to-edge */
+    width:100vw; max-width:100vw;
+    margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    overflow:hidden;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    isolation:isolate;
+}
+.ms-hero *{box-sizing:border-box;margin:0;padding:0;}
+.ms-hero em{font-style:italic;}
+
+/* ============ VIDEO + ATMOSPHERE ============ */
+.ms-bg{
+    position:absolute; inset:0; z-index:0;
+    will-change:transform;
+}
+.ms-video{
+    position:absolute; inset:-2% ; /* slight bleed for parallax */
+    width:104%; height:104%;
+    object-fit:cover;
+    filter:saturate(1.08) contrast(1.03);   /* video pieno, niente dimming */
+    transform:scale(1.06);
+}
+/* solo una sfumatura a sinistra per leggibilita' del testo (video pieno a destra) */
+.ms-grade{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:
+        linear-gradient(90deg, rgba(8,8,10,.78) 0%, rgba(8,8,10,.42) 26%, rgba(8,8,10,.05) 52%, transparent 70%),
+        linear-gradient(180deg, rgba(8,8,10,.5) 0%, transparent 16%, transparent 60%, rgba(8,8,10,.45) 100%);
+}
+/* drifting colour glow mesh */
+.ms-mesh{
+    position:absolute; inset:-30%; z-index:1; pointer-events:none;
+    background:
+        radial-gradient(38% 38% at 22% 30%, color-mix(in srgb,var(--glow-a) 55%, transparent), transparent 70%),
+        radial-gradient(34% 34% at 80% 25%, color-mix(in srgb,var(--glow-b) 45%, transparent), transparent 70%),
+        radial-gradient(40% 40% at 65% 85%, color-mix(in srgb,var(--accent) 28%, transparent), transparent 70%);
+    filter:blur(40px) saturate(1.2);
+    opacity:.32;
+    mix-blend-mode:screen;
+    animation:ms-mesh 22s ease-in-out infinite alternate;
+}
+@keyframes ms-mesh{
+    0%  {transform:translate3d(-4%,-2%,0) scale(1);}
+    50% {transform:translate3d(4%,3%,0) scale(1.12);}
+    100%{transform:translate3d(-2%,4%,0) scale(1.04);}
+}
+/* film grain */
+.ms-grain{
+    position:absolute; inset:-50%; z-index:2; pointer-events:none;
+    opacity:.10; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:ms-grain .5s steps(2) infinite;
+}
+@keyframes ms-grain{
+    0%{transform:translate(0,0)} 25%{transform:translate(-6%,4%)}
+    50%{transform:translate(3%,-5%)} 75%{transform:translate(-4%,-3%)}
+    100%{transform:translate(5%,3%)}
+}
+/* fine scan/edge framing */
+.ms-frame{
+    position:absolute; inset:14px; z-index:6; pointer-events:none;
+    border:1px solid rgba(244,241,234,.10);
+    border-radius:10px;
+    opacity:0; transition:opacity 1.2s var(--ease) .9s;
+}
+.ms-hero.is-ready .ms-frame{opacity:1;}
+
+/* progress sliver (scoped to hero scroll-out) */
+.ms-progress{
+    position:absolute; top:0; left:0; height:2px; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--glow-b));
+    z-index:30; box-shadow:0 0 18px var(--accent);
+}
+
+/* ============ NAV ============ */
+.ms-nav{
+    position:absolute; top:0; left:0; right:0; z-index:20;
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(18px,2.4vw,30px) var(--pad);
+}
+.ms-logo{
+    font-weight:700; font-size:clamp(16px,1.5vw,20px);
+    letter-spacing:-.02em; text-decoration:none; color:var(--ink);
+    display:inline-flex; align-items:center; gap:9px;
+}
+.ms-logo b{
+    width:11px; height:11px; border-radius:50%;
+    background:var(--accent); box-shadow:0 0 16px var(--accent);
+    animation:ms-pulse 2.4s ease-in-out infinite;
+}
+.ms-menu{list-style:none; display:flex; gap:clamp(22px,2.6vw,48px); perspective:700px;}
+/* entrata: ogni voce cala dall'alto con flip 3D (a cascata) */
+.ms-menu li{
+    opacity:0; transform:translateY(-22px) rotateX(-60deg); transform-origin:top center;
+    transition:opacity .6s var(--ease), transform .7s var(--ease);
+}
+.ms-hero.is-ready .ms-menu li{opacity:1; transform:none;}
+.ms-hero.is-ready .ms-menu li:nth-child(1){transition-delay:.05s}
+.ms-hero.is-ready .ms-menu li:nth-child(2){transition-delay:.14s}
+.ms-hero.is-ready .ms-menu li:nth-child(3){transition-delay:.23s}
+.ms-hero.is-ready .ms-menu li:nth-child(4){transition-delay:.32s}
+/* hover: solo un leggero zoom */
+.ms-navlink{position:relative; display:inline-block; text-decoration:none; color:#fff;
+    font-size:clamp(15px,1.15vw,17px); font-weight:500; letter-spacing:.02em; line-height:1.3;
+    text-shadow:0 1px 12px rgba(0,0,0,.45);
+    transition:transform .35s var(--ease);}
+.ms-navlink span:nth-child(2){display:none;}
+/* barra dorata scorrevole che compare SOTTO la voce al passaggio del mouse */
+.ms-navlink::after{
+    content:''; position:absolute; left:0; right:0; bottom:-7px; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,
+        transparent 0%, var(--accent) 18%, #ffe9b0 50%, var(--accent) 82%, transparent 100%);
+    background-size:200% 100%; background-position:0% center;
+    transform:scaleX(0); transform-origin:center;
+    box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%, transparent);
+    transition:transform .45s var(--ease);
+    pointer-events:none;
+}
+/* hover: zoom della voce — il testo resta SEMPRE bianco, solo la barra è oro */
+.ms-navlink:hover{transform:scale(1.18); color:#fff;}
+.ms-navlink:hover::after{transform:scaleX(1); animation:ms-navbar 1.4s linear infinite;}
+@keyframes ms-navbar{to{background-position:-200% center;}}
+.ms-nav-cta{
+    text-decoration:none; color:var(--ink); font-size:13px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+    padding:11px 20px; border:1px solid var(--line); border-radius:100px;
+    backdrop-filter:blur(8px); background:rgba(255,255,255,.03);
+    transition:border-color .4s var(--ease), background .4s var(--ease);
+}
+.ms-nav-cta:hover{border-color:var(--accent); background:rgba(204,255,0,.08);}
+
+/* ============ CONTENT ============ */
+.ms-inner{
+    position:relative; z-index:12;
+    height:100%; display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    text-align:left;
+    padding:0 var(--pad);
+    max-width:1500px; margin:0 auto;
+}
+.ms-pill{
+    display:inline-flex; align-items:center; gap:10px; width:fit-content;
+    padding:8px 16px; border-radius:100px;
+    border:1px solid var(--line); background:rgba(255,255,255,.04);
+    backdrop-filter:blur(10px);
+    font-size:12.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:clamp(20px,3vw,30px);
+}
+.ms-pill i{
+    width:7px; height:7px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 12px var(--accent); animation:ms-pulse 2s infinite;
+}
+@keyframes ms-pulse{0%,100%{opacity:1; transform:scale(1)}50%{opacity:.45; transform:scale(.7)}}
+
+.ms-title{
+    font-weight:500;
+    font-size:clamp(3rem, 9.5vw, 9rem);
+    line-height:.96; letter-spacing:-.035em;
+    max-width:none;
+}
+.ms-line{display:block; overflow:hidden; padding:.04em .08em .16em; margin:-.04em -.08em -.16em;}
+.ms-line i{
+    display:block; font-style:normal;
+    transform:translateY(118%) rotate(4deg) scale(1.05);
+    opacity:0; filter:blur(7px);
+    transition:transform 1.15s var(--ease), opacity 1.15s var(--ease), filter 1.15s var(--ease);
+    transition-delay:var(--d,0s);
+    will-change:transform, filter;
+}
+.ms-hero.is-ready .ms-line i{transform:translateY(0) rotate(0) scale(1); opacity:1; filter:blur(0);}
+.ms-title em{
+    font-family:'Instrument Serif',Georgia,serif; font-weight:400; font-style:italic;
+    background:linear-gradient(100deg,var(--accent),var(--glow-b) 42%,var(--glow-a) 68%,var(--accent));
+    background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    padding:0 .08em;
+    filter:drop-shadow(0 0 34px color-mix(in srgb,var(--glow-b) 38%, transparent));
+    animation:ms-shine 6s linear infinite;
+}
+@keyframes ms-shine{to{background-position:220% center;}}
+
+/* ---- titolo "vivo": riflettore al mouse + lettere interattive ---- */
+.ms-title{position:relative;}
+.ms-title::before{
+    content:''; position:absolute; inset:-14% -8%; z-index:-1; pointer-events:none;
+    background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),
+        color-mix(in srgb,var(--accent) 42%, transparent),
+        color-mix(in srgb,var(--glow-a) 22%, transparent) 38%, transparent 62%);
+    opacity:0; filter:blur(26px); transition:opacity .5s var(--ease);
+}
+.ms-title:hover::before{opacity:1;}
+
+.ms-ch{display:inline-block; will-change:transform;
+    transition:transform .35s cubic-bezier(.2,.9,.3,1.6), color .35s var(--ease), text-shadow .35s var(--ease);}
+/* lettere delle parole normali */
+.ms-line i > .ms-ch:hover{
+    transform:translateY(-.12em) scale(1.24);
+    color:var(--accent);
+    text-shadow:0 0 22px color-mix(in srgb,var(--accent) 78%, transparent),
+                0 0 52px color-mix(in srgb,var(--glow-b) 45%, transparent);
+}
+/* parola accento "Gusto" come blocco */
+.ms-title em{display:inline-block; transition:transform .4s cubic-bezier(.2,.9,.3,1.6), filter .4s var(--ease);}
+.ms-title em:hover{
+    transform:scale(1.12) translateY(-.05em);
+    filter:drop-shadow(0 0 54px color-mix(in srgb,var(--glow-a) 60%, transparent))
+           drop-shadow(0 0 26px color-mix(in srgb,var(--accent) 55%, transparent));
+}
+/* a reveal finito tolgo il clipping così le lettere possono "uscire" */
+.ms-hero.reveal-done .ms-line{overflow:visible;}
+@media (hover:none){ .ms-title::before{display:none;} }   /* niente riflettore su touch */
+
+/* ---- tagline "GELATERIA VENETA" — font Cinzel + animazione testo ---- */
+.ms-sub{
+    margin-top:clamp(20px,2.8vw,34px);
+    font-family:'Cinzel', Georgia, serif; font-weight:600;
+    font-size:clamp(1.2rem,3.2vw,2.4rem); line-height:1.12;
+    letter-spacing:.12em; text-transform:uppercase;
+    width:fit-content; transform-origin:left center;
+    transition:transform .4s var(--ease);
+}
+.ms-sub:hover{transform:scale(1.08);}
+.ms-tc{display:inline-block; transform-origin:50% 100%;
+    background:linear-gradient(100deg, var(--accent), #ffe9b0 42%, var(--glow-b) 66%, var(--accent));
+    background-size:240% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    filter:drop-shadow(0 0 20px color-mix(in srgb,var(--accent) 30%, transparent));
+    opacity:0; transform:translateY(.7em) rotate(8deg);}
+.ms-hero.is-ready .ms-tc{
+    animation:ms-tcin .85s var(--ease) forwards calc(.9s + var(--i,0)*.05s), ms-tagshine 6s linear infinite;}
+@keyframes ms-tcin{to{opacity:1; transform:none;}}
+@keyframes ms-tagshine{to{background-position:240% center;}}
+
+.ms-actions{
+    margin-top:clamp(30px,3.6vw,44px);
+    display:flex; flex-wrap:wrap; gap:16px; justify-content:flex-start;
+}
+/* ogni pulsante entra con un pop (a cascata, per ultimo) */
+.ms-act{display:inline-block; opacity:0; transform:translateY(30px) scale(.88);
+    transition:opacity .7s var(--ease), transform .8s cubic-bezier(.34,1.5,.5,1);}
+.ms-hero.is-ready .ms-act{opacity:1; transform:none;}
+.ms-hero.is-ready .ms-act:nth-child(1){transition-delay:1.3s}
+.ms-hero.is-ready .ms-act:nth-child(2){transition-delay:1.46s}
+.ms-btn{
+    position:relative; overflow:hidden;
+    display:inline-flex; align-items:center; gap:12px;
+    padding:16px 30px; border-radius:100px;
+    font-size:15px; font-weight:600; letter-spacing:.01em;
+    text-decoration:none; will-change:transform;
+    transition:transform .3s var(--easeOut), color .35s var(--ease);
+}
+.ms-btn svg{width:17px;height:17px;transition:transform .45s var(--ease);}
+.ms-btn--primary{background:var(--accent); color:#0a0a0a;}
+.ms-btn--primary::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.65) 45%,transparent 70%);
+    transform:translateX(-120%); transition:transform .8s var(--ease);
+}
+.ms-btn--primary:hover::before{transform:translateX(120%);}
+.ms-btn--primary:hover svg{transform:translate(4px,-4px);}
+.ms-btn--ghost{color:var(--ink); border:1px solid var(--line); background:rgba(255,255,255,.03); backdrop-filter:blur(8px);}
+.ms-btn--ghost:hover{border-color:var(--ink);}
+.ms-btn--ghost:hover svg{transform:translateX(4px);}
+
+/* ============ BOTTOM ROW ============ */
+.ms-bottom{
+    position:absolute; left:var(--pad); right:var(--pad); bottom:clamp(70px,9vh,96px);
+    z-index:12; display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    opacity:0; transition:opacity 1.1s var(--ease) .9s;
+}
+.ms-hero.is-ready .ms-bottom{opacity:1;}
+.ms-scroll{display:flex; align-items:center; gap:12px; color:var(--muted); font-size:12px; letter-spacing:.14em; text-transform:uppercase;}
+.ms-scroll .mouse{
+    width:22px; height:34px; border:1px solid var(--line); border-radius:14px; position:relative;
+}
+.ms-scroll .mouse::after{
+    content:''; position:absolute; left:50%; top:7px; width:3px; height:7px; border-radius:3px;
+    background:var(--accent); transform:translateX(-50%);
+    animation:ms-wheel 1.8s var(--ease) infinite;
+}
+@keyframes ms-wheel{0%{opacity:0;transform:translate(-50%,0)}30%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,11px)}}
+.ms-meta{display:flex; gap:clamp(22px,3vw,52px); text-align:right;}
+.ms-meta div{font-size:12px; color:var(--muted); line-height:1.5;}
+.ms-meta b{display:block; color:var(--ink); font-size:clamp(20px,2vw,30px); font-weight:600; letter-spacing:-.02em;}
+
+/* ============ MARQUEE ============ */
+.ms-marquee{
+    position:absolute; bottom:0; left:0; right:0; z-index:12;
+    padding:14px 0; border-top:1px solid var(--line);
+    background:linear-gradient(180deg,transparent,rgba(8,8,10,.6));
+    overflow:hidden; white-space:nowrap;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+            mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.ms-marquee__track{display:inline-flex; gap:0; animation:ms-marq 26s linear infinite; will-change:transform;}
+.ms-marquee span{
+    font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+    padding:0 26px; display:inline-flex; align-items:center; gap:26px;
+}
+.ms-marquee span::before{content:'✺'; color:var(--accent); font-size:11px;}
+@keyframes ms-marq{to{transform:translateX(-50%);}}
+
+/* ============ PRELOADER ============ */
+.ms-loader{
+    position:absolute; inset:0; z-index:60; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px;
+    transition:transform 1.1s var(--ease), opacity .6s ease;
+}
+.ms-loader.done{transform:translateY(-101%);}
+.ms-loader__count{font-size:clamp(3.2rem,11vw,8rem); font-weight:600; letter-spacing:-.04em; line-height:1;}
+.ms-loader__count em{font-family:'Instrument Serif',serif; font-style:italic; color:var(--accent);}
+.ms-loader__bar{width:min(280px,52vw); height:2px; background:rgba(255,255,255,.12); overflow:hidden;}
+.ms-loader__bar i{display:block; height:100%; width:0%; background:var(--accent); box-shadow:0 0 14px var(--accent);}
+.ms-loader__brand{font-size:11px; letter-spacing:.4em; text-transform:uppercase; color:var(--muted);}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:900px){
+    .ms-menu{gap:clamp(16px,4vw,28px);}
+}
+@media (max-width:560px){
+    .ms-title{font-size:clamp(2.8rem,14vw,4.4rem);}
+    .ms-menu{gap:16px; font-size:13px;}
+    .ms-actions{flex-direction:column; align-items:center; width:100%;}
+    .ms-btn{width:100%; max-width:320px; justify-content:center;}
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion:reduce){
+    .ms-hero *{animation:none !important; transition-duration:.001s !important;}
+    .ms-line i{transform:none; opacity:1;}
+}
+</style>
+
+<!-- ===================== MARKUP ===================== -->
+<section class="ms-hero" id="msHero">
+
+    <!-- Background -->
+    <div class="ms-bg" data-bg>
+        <!-- ▼▼ SOSTITUISCI src con l'URL del video caricato in WordPress (Libreria Media)
+             es: src="/wp-content/uploads/2026/06/Flow_1080p.mp4"  ▼▼ -->
+        <video class="ms-video" autoplay muted loop playsinline preload="auto" poster="">
+            <source src="Flow_1080p_202606251743_1.mp4" type="video/mp4">
+        </video>
+        <div class="ms-grade"></div>
+        <div class="ms-mesh"></div>
+        <div class="ms-grain"></div>
+    </div>
+
+    <div class="ms-progress" data-progress></div>
+
+    <!-- Nav: solo menu centrale -->
+    <nav class="ms-nav">
+        <ul class="ms-menu">
+            <li><a href="#home" class="ms-navlink"><span>Home</span><span aria-hidden="true">Home</span></a></li>
+            <li><a href="#gusti" class="ms-navlink"><span>Gusti</span><span aria-hidden="true">Gusti</span></a></li>
+            <li><a href="#storia" class="ms-navlink"><span>Storia</span><span aria-hidden="true">Storia</span></a></li>
+            <li><a href="#contatti" class="ms-navlink"><span>Contatti</span><span aria-hidden="true">Contatti</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Content: titolo centrale + tagline + 2 pulsanti -->
+    <div class="ms-inner">
+        <h1 class="ms-title">
+            <span class="ms-line"><i style="--d:.4s">Il piacere</i></span>
+            <span class="ms-line"><i style="--d:.55s">del <em>Gusto</em></i></span>
+        </h1>
+
+        <p class="ms-sub">Gelateria Veneta</p>
+
+        <div class="ms-actions">
+            <span class="ms-act"><a href="#gusti" class="ms-btn ms-btn--primary" data-magnetic>
+                Scopri i gusti
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a></span>
+            <span class="ms-act"><a href="#locali" class="ms-btn ms-btn--ghost" data-magnetic>
+                Dove trovarci
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a></span>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+(function(){
+    'use strict';
+    var hero = document.getElementById('msHero');
+    if(!hero || hero.dataset.init) return;
+    hero.dataset.init = '1';
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine   = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    var lerp = function(a,b,n){return a+(b-a)*n;};
+
+    /* ---------- Split del titolo in lettere (parole normali; "Gusto" resta intero) ---------- */
+    function splitChars(node){
+        Array.prototype.slice.call(node.childNodes).forEach(function(n){
+            if(n.nodeType===3){                       /* testo -> una span per lettera */
+                var frag=document.createDocumentFragment();
+                n.nodeValue.split('').forEach(function(ch){
+                    if(ch===' '){ frag.appendChild(document.createTextNode(' ')); }
+                    else { var s=document.createElement('span'); s.className='ms-ch'; s.textContent=ch; frag.appendChild(s); }
+                });
+                node.replaceChild(frag, n);
+            }
+            /* gli elementi (es. <em>Gusto</em>) restano interi */
+        });
+    }
+    Array.prototype.slice.call(hero.querySelectorAll('.ms-title .ms-line i')).forEach(splitChars);
+
+    /* ---------- Split tagline "GELATERIA VENETA" in lettere ---------- */
+    var sub = hero.querySelector('.ms-sub');
+    if(sub){
+        var j = 0;
+        Array.prototype.slice.call(sub.childNodes).forEach(function(n){
+            if(n.nodeType===3){
+                var frag=document.createDocumentFragment();
+                n.nodeValue.split('').forEach(function(ch){
+                    if(ch===' '){ frag.appendChild(document.createTextNode(' ')); }
+                    else { var s=document.createElement('span'); s.className='ms-tc'; s.style.setProperty('--i', j++); s.textContent=ch; frag.appendChild(s); }
+                });
+                sub.replaceChild(frag, n);
+            }
+        });
+    }
+
+    /* ---------- Intro: il video gira da solo 3s, poi entra tutto in cascata ---------- */
+    function reveal(){
+        hero.classList.add('is-ready');
+        setTimeout(function(){ hero.classList.add('reveal-done'); }, 2400);
+    }
+    if(reduce){ reveal(); }
+    else { setTimeout(reveal, 3000); }
+
+    /* ---------- Magnetic buttons + spotlight sul titolo (pointer-fine only) ---------- */
+    var magnets = Array.prototype.slice.call(hero.querySelectorAll('[data-magnetic]'));
+    if(fine && !reduce){
+        magnets.forEach(function(el){
+            el.addEventListener('mousemove', function(e){
+                var b = el.getBoundingClientRect();
+                var dx = e.clientX - (b.left + b.width/2);
+                var dy = e.clientY - (b.top  + b.height/2);
+                el.style.transform = 'translate(' + dx*0.3 + 'px,' + dy*0.4 + 'px)';
+            });
+            el.addEventListener('mouseleave', function(){ el.style.transform=''; });
+        });
+
+        var title = hero.querySelector('.ms-title');
+        if(title){
+            title.addEventListener('mousemove', function(e){
+                var b = title.getBoundingClientRect();
+                title.style.setProperty('--mx', ((e.clientX-b.left)/b.width*100) + '%');
+                title.style.setProperty('--my', ((e.clientY-b.top)/b.height*100) + '%');
+            }, {passive:true});
+        }
+    }
+
+    /* ---------- Scroll parallax (hero only) ---------- */
+    var bg = hero.querySelector('[data-bg]');
+    var inner = hero.querySelector('.ms-inner');
+    var prog = hero.querySelector('[data-progress]');
+    var ticking = false;
+    function onScroll(){
+        if(ticking) return; ticking = true;
+        requestAnimationFrame(function(){
+            var r = hero.getBoundingClientRect();
+            var h = r.height || 1;
+            var prg = Math.min(Math.max(-r.top / h, 0), 1);   /* 0..1 while hero scrolls out */
+            if(prog) prog.style.width = (prg*100) + '%';
+            if(!reduce){
+                if(bg)    bg.style.transform    = 'translate3d(0,' + (prg*14) + '%,0)';
+                if(inner) inner.style.transform = 'translate3d(0,' + (prg*-9) + '%,0)';
+                if(inner) inner.style.opacity   = String(1 - prg*1.1);
+            }
+            ticking = false;
+        });
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+})();
+</script>

@@ -1,0 +1,376 @@
+<!-- ============================================================= -->
+<!--  SEZIONE "SPOT CINEMATIC" — IL VIDEO DENTRO LE PAROLE         -->
+<!--  Un cortometraggio scroll-driven mai visto:                     -->
+<!--   1. Le barre cinema si aprono · timecode live · REC           -->
+<!--   2. Parola gigante "GELATO" = finestra sul video (SVG mask)    -->
+<!--      che cresce e si dissolve rivelando la scena intera         -->
+<!--   3. Frasi che entrano con animazioni assurde e diverse:        -->
+<!--        BLAST (motion-blur) · FLIP 3D · GLITCH (RGB split)       -->
+<!--   4. Finale oro + CTA · le barre si richiudono in formato film  -->
+<!--  Elementor: widget HTML Custom. CSS namespacizzato in .cine     -->
+<!--  ▼ Sostituisci src del <video> con l'URL della Libreria Media.  -->
+<!-- ============================================================= -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cinzel:wght@600;700;800&family=Instrument+Serif:ital@1&display=swap');
+
+.cine{
+    --bg:#050506; --ink:#F7F4EE; --muted:rgba(247,244,238,.6); --line:rgba(247,244,238,.16);
+    --accent:#FFC53D; --glow-a:#FF4D6D; --glow-b:#FF8A3D; --cyan:#3DE0FF;
+    --ease:cubic-bezier(.16,1,.3,1); --pad:clamp(18px,4vw,60px);
+    position:relative; background:var(--bg); color:var(--ink); overflow:clip;
+    width:100vw; max-width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; isolation:isolate;
+}
+.cine *{box-sizing:border-box; margin:0; padding:0;}
+
+.cine-wrap{position:relative; height:640vh; z-index:1;}
+.cine-sticky{position:sticky; top:0; height:100vh; overflow:hidden;}
+
+/* ---- video di sfondo ---- */
+.cine-bg{position:absolute; inset:0; z-index:0; will-change:transform;}
+.cine-video{position:absolute; inset:-4%; width:108%; height:108%; object-fit:cover;
+    filter:saturate(1.1) contrast(1.06);}
+.cine-grade{position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:
+        radial-gradient(125% 95% at 50% 50%, transparent 28%, rgba(0,0,0,.62) 100%),
+        linear-gradient(180deg, rgba(5,5,6,.5) 0%, rgba(5,5,6,.12) 38%, rgba(5,5,6,.6) 100%);}
+.cine-grain{position:absolute; inset:-50%; z-index:3; opacity:.06; mix-blend-mode:overlay; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:cine-grain .55s steps(2) infinite;}
+@keyframes cine-grain{0%{transform:translate(0,0)}50%{transform:translate(-4%,3%)}100%{transform:translate(4%,-3%)}}
+
+/* ---- la finestra-parola sul video (SVG mask) ---- */
+.cine-mask{position:absolute; inset:0; width:100%; height:100%; z-index:4; pointer-events:none;}
+
+/* ---- barre cinema (letterbox) ---- */
+.cine-bar{position:absolute; left:0; right:0; height:46%; background:#040405; z-index:8; pointer-events:none;
+    box-shadow:0 0 60px rgba(0,0,0,.6);}
+.cine-bar.top{top:0;} .cine-bar.bot{bottom:0;}
+.cine-bar i{position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent);}
+.cine-bar.top i{bottom:0;} .cine-bar.bot i{top:0;}
+
+/* ---- HUD da macchina da presa ---- */
+.cine-hud{position:absolute; inset:0; z-index:9; pointer-events:none;
+    font-size:12px; letter-spacing:.24em; text-transform:uppercase;}
+.cine-rec{position:absolute; top:clamp(58px,11vh,108px); left:var(--pad); display:flex; align-items:center; gap:9px; color:var(--ink);}
+.cine-rec b{width:10px; height:10px; border-radius:50%; background:#ff3b30; box-shadow:0 0 12px #ff3b30; animation:cine-blink 1.2s infinite;}
+@keyframes cine-blink{0%,100%{opacity:1}50%{opacity:.15}}
+.cine-tc{position:absolute; top:clamp(58px,11vh,108px); right:var(--pad); color:var(--accent); font-variant-numeric:tabular-nums; letter-spacing:.18em;}
+.cine-meta{position:absolute; bottom:clamp(58px,11vh,108px); left:var(--pad); color:var(--muted); font-size:11px; letter-spacing:.22em;}
+.cine-take{position:absolute; bottom:clamp(58px,11vh,108px); right:var(--pad); color:var(--muted); font-size:11px; letter-spacing:.22em;}
+
+/* mirini agli angoli (viewfinder) */
+.cine-corner{position:absolute; width:34px; height:34px; border:0 solid var(--ink); opacity:.55; z-index:9;}
+.cine-corner.tl{top:clamp(54px,10.5vh,104px); left:calc(var(--pad) - 6px); border-top-width:2px; border-left-width:2px;}
+.cine-corner.tr{top:clamp(54px,10.5vh,104px); right:calc(var(--pad) - 6px); border-top-width:2px; border-right-width:2px;}
+.cine-corner.bl{bottom:clamp(54px,10.5vh,104px); left:calc(var(--pad) - 6px); border-bottom-width:2px; border-left-width:2px;}
+.cine-corner.br{bottom:clamp(54px,10.5vh,104px); right:calc(var(--pad) - 6px); border-bottom-width:2px; border-right-width:2px;}
+
+/* parentesi di fuoco al centro */
+.cine-focus{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(48vw,360px); height:min(34vh,220px); z-index:6; pointer-events:none; opacity:0; transition:opacity .5s var(--ease);}
+.cine-focus span{position:absolute; width:22px; height:22px; border:0 solid var(--accent);}
+.cine-focus .a{top:0;left:0;border-top-width:2px;border-left-width:2px;}
+.cine-focus .b{top:0;right:0;border-top-width:2px;border-right-width:2px;}
+.cine-focus .c{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
+.cine-focus .d{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
+
+/* ---- palco delle frasi ---- */
+.cine-stage{position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;}
+.cine-ph{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:94%; max-width:1180px; text-align:center; pointer-events:none; visibility:hidden;}
+.cine-line{display:block; font-weight:700; letter-spacing:-.01em; line-height:.95;
+    font-size:clamp(2.3rem,11vw,8.2rem); text-shadow:0 12px 60px rgba(0,0,0,.5);}
+.cine-line.sm{font-size:clamp(.95rem,2.8vw,1.7rem); font-weight:500; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); margin-top:.55em;}
+.cine-w{display:inline-block;}
+.cine-w + .cine-w{margin-left:.34em;}
+.cine-w.accent{color:var(--accent);}
+.cine-let{display:inline-block; will-change:transform,opacity,filter; transform-origin:center; backface-visibility:hidden;}
+
+/* finale oro */
+.cine-final{visibility:hidden;}
+.cine-final .cine-line{font-family:'Cinzel',Georgia,serif; font-weight:800; letter-spacing:.04em;
+    background:linear-gradient(100deg,var(--accent),#fff 42%,var(--glow-b) 66%,var(--accent)); background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    filter:drop-shadow(0 0 40px color-mix(in srgb,var(--accent) 42%, transparent)); animation:cine-shine 6s linear infinite;}
+@keyframes cine-shine{to{background-position:220% center;}}
+.cine-final .cine-line.sm{font-family:'Space Grotesk',sans-serif; -webkit-text-fill-color:initial; color:var(--accent);
+    background:none; filter:none; animation:none; font-weight:600;}
+.cine-cta{display:inline-flex; align-items:center; gap:12px; margin-top:clamp(22px,4vh,40px);
+    padding:15px 30px; border-radius:100px; border:1px solid color-mix(in srgb,var(--accent) 60%, transparent);
+    color:var(--ink); font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+    background:color-mix(in srgb,var(--accent) 10%, transparent); pointer-events:auto;
+    box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 40%, transparent); transition:box-shadow .4s var(--ease),transform .3s var(--ease),background .3s;}
+.cine-cta:hover{transform:translateY(-2px); background:color-mix(in srgb,var(--accent) 20%, transparent); box-shadow:0 14px 40px color-mix(in srgb,var(--accent) 28%, transparent);}
+.cine-cta b{width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent);}
+
+/* ---- hint + progress ---- */
+.cine-hint{position:absolute; left:50%; bottom:clamp(80px,14vh,140px); transform:translateX(-50%); z-index:9;
+    font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--muted);
+    opacity:0; transition:opacity .6s var(--ease);}
+.cine.is-in .cine-hint{opacity:1;}
+.cine-prog{position:absolute; left:var(--pad); right:var(--pad); bottom:clamp(34px,6vh,56px); height:2px; background:var(--line); z-index:9; border-radius:2px; overflow:hidden;}
+.cine-prog i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--glow-a)); box-shadow:0 0 14px var(--accent);}
+
+@media (max-width:720px){
+    .cine-corner{display:none;}
+    .cine-line{line-height:1;}
+}
+@media (prefers-reduced-motion:reduce){
+    .cine-wrap{height:auto;} .cine-sticky{position:static; height:100vh;}
+    .cine-mask,.cine-stage .cine-ph,.cine-focus{display:none;}
+    .cine-bar{height:12% !important;}
+    .cine-final{display:block; visibility:visible; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:94%; text-align:center;}
+    .cine-final .cine-let{transform:none !important; opacity:1 !important;}
+}
+</style>
+
+<section class="cine" id="cineRoot">
+    <div class="cine-wrap" data-cine-wrap>
+        <div class="cine-sticky">
+
+            <!-- video -->
+            <div class="cine-bg" data-cine-bg>
+                <!-- ▼ sostituisci src con l'URL del video (Libreria Media WP) -->
+                <video class="cine-video" autoplay muted loop playsinline preload="auto" src="video-gelato.mp4"></video>
+                <div class="cine-grade"></div>
+                <div class="cine-grain"></div>
+            </div>
+
+            <!-- finestra-parola: il video gira DENTRO la scritta -->
+            <svg class="cine-mask" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                    <mask id="cineHole" maskUnits="userSpaceOnUse" x="0" y="0" width="1280" height="720">
+                        <rect width="1280" height="720" fill="#fff"></rect>
+                        <g id="cineWord">
+                            <text x="640" y="360" text-anchor="middle" dominant-baseline="central"
+                                  font-family="Cinzel, Georgia, serif" font-weight="800" font-size="250" letter-spacing="6" fill="#000">GELATO</text>
+                        </g>
+                    </mask>
+                </defs>
+                <rect id="cineDark" width="1280" height="720" fill="#050506" mask="url(#cineHole)"></rect>
+            </svg>
+
+            <!-- barre cinema -->
+            <div class="cine-bar top" data-bar-top><i></i></div>
+            <div class="cine-bar bot" data-bar-bot><i></i></div>
+
+            <!-- parentesi di fuoco -->
+            <div class="cine-focus" data-focus><span class="a"></span><span class="b"></span><span class="c"></span><span class="d"></span></div>
+
+            <!-- HUD -->
+            <span class="cine-corner tl"></span><span class="cine-corner tr"></span>
+            <span class="cine-corner bl"></span><span class="cine-corner br"></span>
+            <div class="cine-hud">
+                <div class="cine-rec"><b></b> Rec · On Air</div>
+                <div class="cine-tc" data-tc>00:00:00:00</div>
+                <div class="cine-meta">Gelateria Veneta · Spot 4K</div>
+                <div class="cine-take">Take 01 · 25 fps</div>
+            </div>
+
+            <!-- frasi -->
+            <div class="cine-stage">
+                <!-- BLAST: lettere che esplodono dal basso con motion-blur -->
+                <div class="cine-ph" data-type="blast" data-s="0.34" data-e="0.55">
+                    <span class="cine-line"><span class="cine-w" data-split>Mantecato</span><span class="cine-w" data-split>a</span><span class="cine-w" data-split>freddo</span></span>
+                </div>
+                <!-- FLIP 3D: cascata di ribaltamenti -->
+                <div class="cine-ph" data-type="flip3d" data-s="0.55" data-e="0.73">
+                    <span class="cine-line"><span class="cine-w" data-split>Solo</span><span class="cine-w" data-split>ingredienti</span><span class="cine-w accent" data-split>veri</span></span>
+                </div>
+                <!-- GLITCH: split RGB + jitter -->
+                <div class="cine-ph" data-type="glitch" data-s="0.73" data-e="0.88">
+                    <span class="cine-line"><span class="cine-w" data-split>Zero</span><span class="cine-w" data-split>conservanti</span></span>
+                </div>
+            </div>
+
+            <!-- finale -->
+            <div class="cine-ph cine-final" data-final>
+                <span class="cine-line">Gelateria Veneta</span>
+                <span class="cine-line sm">il gusto prende vita</span>
+                <div><a class="cine-cta" href="#contatti"><b></b> Vieni a provarlo</a></div>
+            </div>
+
+            <div class="cine-hint">Scorri per girare lo spot</div>
+            <div class="cine-prog"><i data-cine-prog></i></div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function(){
+    'use strict';
+    var root=document.getElementById('cineRoot');
+    if(!root||root.dataset.init) return; root.dataset.init='1';
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var wrap   = root.querySelector('[data-cine-wrap]');
+    var prog   = root.querySelector('[data-cine-prog]');
+    var bg     = root.querySelector('[data-cine-bg]');
+    var barT   = root.querySelector('[data-bar-top]');
+    var barB   = root.querySelector('[data-bar-bot]');
+    var focus  = root.querySelector('[data-focus]');
+    var tcEl   = root.querySelector('[data-tc]');
+    var cineWord = document.getElementById('cineWord');
+    var cineDark = document.getElementById('cineDark');
+    var finalEl  = root.querySelector('[data-final]');
+
+    function clamp01(v){ return v<0?0:(v>1?1:v); }
+    function eOut(t){ return 1-Math.pow(1-t,3); }
+    function eIn(t){ return t*t*t; }
+    function lerp(a,b,t){ return a+(b-a)*t; }
+    function pad2(n){ n=Math.floor(n); return n<10?('0'+n):(''+n); }
+
+    /* ---- splitter: ogni parola [data-split] diventa lettere ---- */
+    function splitPhrase(ph){
+        var letters=[];
+        var parts=ph.querySelectorAll('[data-split]');
+        for(var p=0;p<parts.length;p++){
+            var part=parts[p], txt=part.textContent; part.textContent='';
+            for(var i=0;i<txt.length;i++){
+                var s=document.createElement('span'); s.className='cine-let'; s.textContent=txt[i];
+                part.appendChild(s); letters.push(s);
+            }
+        }
+        return letters;
+    }
+
+    var phrases=[];
+    var phEls=root.querySelectorAll('.cine-stage .cine-ph');
+    for(var i=0;i<phEls.length;i++){
+        var el=phEls[i];
+        phrases.push({
+            el:el, type:el.getAttribute('data-type'),
+            s:parseFloat(el.getAttribute('data-s')), e:parseFloat(el.getAttribute('data-e')),
+            letters:splitPhrase(el)
+        });
+    }
+
+    /* ---- una lettera, secondo il tipo di animazione ---- */
+    function applyLetter(type, el, lin, lout){
+        var d=1-lin;            /* quanto manca all'ingresso */
+        var tr, bl=0, op=lin*(1-lout);
+        switch(type){
+            case 'blast':
+                var ty = d*155 - lout*120;
+                var sc = (0.5 + lin*0.5) * (1 - lout*0.2);
+                tr='translate3d(0,'+ty+'%,0) rotateX('+(d*70)+'deg) scale('+sc+')';
+                bl = d*15 + lout*6;
+                break;
+            case 'flip3d':
+                var rx = -115*d + 115*lout;
+                tr='perspective(800px) translate3d(0,'+(d*22)+'%,0) rotateX('+rx+'deg)';
+                bl = d*4;
+                break;
+            case 'glitch':
+                var jx = d>0.002 ? (Math.random()*2-1)*d*18 : 0;
+                var jy = d>0.002 ? (Math.random()*2-1)*d*9  : 0;
+                var sk = (Math.random()*2-1)*d*9;
+                tr='translate3d('+(jx - lout*55)+'px,'+jy+'px,0) skewX('+sk+'deg) scale('+(1-lout*0.3)+')';
+                var off=d*7;
+                el.style.textShadow = off>0.2 ? (off.toFixed(1)+'px 0 rgba(255,77,109,.9), '+(-off).toFixed(1)+'px 0 rgba(61,224,255,.9)') : 'none';
+                break;
+            default:
+                tr='translate3d(0,'+(d*40)+'%,0)';
+        }
+        el.style.transform=tr;
+        el.style.opacity=op;
+        el.style.filter = bl>0.06 ? ('blur('+bl.toFixed(2)+'px)') : 'none';
+    }
+
+    function runPhrase(P,p){
+        var inRange = (p>=P.s-0.03 && p<=P.e+0.03);
+        P.el.style.visibility = inRange ? 'visible' : 'hidden';
+        if(!inRange) return;
+        var lp=clamp01((p-P.s)/(P.e-P.s));
+        var lout=eIn(clamp01((lp-0.74)/0.26));
+        var n=P.letters.length;
+        for(var i=0;i<n;i++){
+            var t0=(i/n)*0.32;                              /* stagger */
+            var lin=eOut(clamp01((lp - t0)/0.42));
+            applyLetter(P.type, P.letters[i], lin, lout);
+        }
+    }
+
+    /* ---- barre cinema: aperte all'inizio, richiuse nel finale ---- */
+    function barHeight(p){
+        var open  = lerp(46, 7, eOut(clamp01(p/0.12)));
+        var close = lerp(0, 9, eIn(clamp01((p-0.88)/0.12)));
+        return (open+close);
+    }
+
+    function apply(p){
+        /* video: parallax + zoom dolce */
+        if(bg) bg.style.transform='translate3d(0,'+(p*-4)+'%,0) scale('+(1.04+p*0.08)+')';
+
+        /* barre */
+        var bh=barHeight(p);
+        if(barT) barT.style.height=bh+'%';
+        if(barB) barB.style.height=bh+'%';
+
+        /* finestra-parola GELATO (SVG mask) */
+        var lpW=clamp01((p-0.04)/0.24);
+        var wScale=lerp(0.82, 2.9, eOut(lpW));
+        if(cineWord) cineWord.setAttribute('transform','translate(640 360) scale('+wScale.toFixed(3)+') translate(-640 -360)');
+        var maskOp = (p<0.04) ? eOut(clamp01(p/0.04))           /* compare */
+                   : (p<0.22) ? 1
+                   : (1 - eIn(clamp01((p-0.22)/0.12)));         /* si dissolve */
+        if(cineDark) cineDark.style.opacity=clamp01(maskOp);
+
+        /* parentesi di fuoco: visibili durante la fase parola */
+        if(focus) focus.style.opacity = (p>0.05 && p<0.32) ? 0.6 : 0;
+
+        /* frasi */
+        for(var i=0;i<phrases.length;i++) runPhrase(phrases[i],p);
+
+        /* finale */
+        if(finalEl){
+            var lpF=clamp01((p-0.86)/0.14);
+            if(lpF<=0){ finalEl.style.visibility='hidden'; }
+            else{
+                finalEl.style.visibility='visible';
+                var inF=eOut(clamp01(lpF/0.55));
+                finalEl.style.opacity=inF;
+                finalEl.style.transform='translate(-50%,-50%) scale('+(0.72+inF*0.28)+')';
+            }
+        }
+
+        /* timecode */
+        if(tcEl){ var t=p*18; tcEl.textContent='00:00:'+pad2(t)+':'+pad2((t-Math.floor(t))*25); }
+
+        if(prog) prog.style.width=(p*100)+'%';
+    }
+
+    /* posiziona il finale assoluto (era nel flusso) */
+    if(finalEl){
+        finalEl.style.position='absolute'; finalEl.style.left='50%'; finalEl.style.top='50%';
+        finalEl.style.zIndex='7'; finalEl.style.transform='translate(-50%,-50%) scale(.72)'; finalEl.style.opacity='0';
+    }
+
+    root.cineApply=apply; /* DEBUG */
+    if(reduce){ apply(1); return; }
+
+    var wrapTop=0, dist=1;
+    function measure(){ wrapTop=wrap.getBoundingClientRect().top+(window.scrollY||window.pageYOffset); dist=(wrap.offsetHeight-window.innerHeight)||1; }
+    function targetP(){ return clamp01(((window.scrollY||window.pageYOffset)-wrapTop)/dist); }
+
+    var curP=0,tgtP=0,running=false;
+    function frame(){
+        curP+=(tgtP-curP)*0.10;
+        var settled=Math.abs(tgtP-curP)<0.0006;
+        if(settled) curP=tgtP;
+        apply(curP);
+        if(running&&!settled){ requestAnimationFrame(frame); } else { running=false; }
+    }
+    function start(){ if(!running){ running=true; requestAnimationFrame(frame); } }
+
+    measure();
+    window.addEventListener('scroll', function(){ tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('resize', function(){ measure(); tgtP=targetP(); start(); }, {passive:true});
+    window.addEventListener('load', function(){ measure(); tgtP=targetP(); start(); });
+    if('IntersectionObserver' in window){
+        var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ root.classList.add('is-in'); tgtP=targetP(); start(); } }); },{threshold:0});
+        io.observe(wrap);
+    } else { root.classList.add('is-in'); }
+    tgtP=targetP(); curP=tgtP; apply(curP); start();
+})();
+</script>

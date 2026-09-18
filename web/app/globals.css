@@ -1,0 +1,449 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — Gelateria Veneta
+   Esposti come utility Tailwind: bg-bg, text-ink, border-line,
+   text-accent, text-glow-a, text-glow-b …
+   ============================================================ */
+@theme {
+  --color-bg: #08080a;
+  --color-bg-deep: #050506;
+  --color-ink: #f4f1ea;
+  --color-muted: rgb(244 241 234 / 0.62);
+  --color-line: rgb(244 241 234 / 0.16);
+  --color-accent: #ffc53d;
+  --color-glow-a: #ff4d6d;
+  --color-glow-b: #ff8a3d;
+  --color-cyan: #3de0ff;
+  --color-cream: #f6efe7;
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-display: var(--font-cinzel), Georgia, serif;
+  --font-editorial: var(--font-fraunces), Georgia, serif;
+
+  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.5, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@property --ang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-bg);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: #0a0a0a;
+  }
+
+  /* Scrollbar coerente con il tema scuro */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b0b0e;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(244 241 234 / 0.16);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+  }
+}
+
+/* ============================================================
+   UTILITY DI PROGETTO
+   ============================================================ */
+
+/* Padding orizzontale fluido usato da tutte le sezioni */
+@utility px-pad {
+  padding-inline: clamp(20px, 4vw, 64px);
+}
+@utility mx-pad {
+  margin-inline: clamp(20px, 4vw, 64px);
+}
+@utility left-pad {
+  left: clamp(20px, 4vw, 64px);
+}
+@utility right-pad {
+  right: clamp(20px, 4vw, 64px);
+}
+
+/* Grana cinematografica */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Testo con gradiente scorrevole oro → mango → lampone */
+@utility text-shine {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-accent),
+    var(--color-glow-b) 42%,
+    var(--color-glow-a) 68%,
+    var(--color-accent)
+  );
+  background-size: 220% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s linear infinite;
+}
+
+/* Bordo a gradiente conico rotante (usato dalle card signature) */
+@utility ring-conic {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--ang, 0deg),
+    transparent 0deg,
+    color-mix(in srgb, var(--c1) 80%, transparent) 70deg,
+    color-mix(in srgb, var(--c2) 80%, transparent) 140deg,
+    transparent 210deg,
+    transparent 360deg
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  animation: spin-ang 9s linear infinite;
+}
+
+/* ============================================================
+   KEYFRAMES CONDIVISI
+   ============================================================ */
+@keyframes shine {
+  to {
+    background-position: 220% center;
+  }
+}
+@keyframes spin-ang {
+  to {
+    --ang: 360deg;
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+@keyframes mesh-drift {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-2%, 4%, 0) scale(1.04);
+  }
+}
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-6%, 4%);
+  }
+  50% {
+    transform: translate(3%, -5%);
+  }
+  75% {
+    transform: translate(-4%, -3%);
+  }
+  100% {
+    transform: translate(5%, 3%);
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes wheel {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 11px);
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ping-ring {
+  0% {
+    opacity: 0.7;
+    width: 18px;
+    height: 18px;
+  }
+  100% {
+    opacity: 0;
+    width: 120px;
+    height: 120px;
+  }
+}
+@keyframes sweep-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-160px);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(115vh);
+  }
+}
+
+/* ============================================================
+   RIDUZIONE DEL MOVIMENTO
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================================
+   COREOGRAFIE RIUSATE DALLE SEZIONI
+
+   Scritte come CSS esplicito (niente `@utility`): queste regole
+   dipendono da un attributo su un ANTENATO (`[data-ready] .classe`).
+   Dentro `@utility` Tailwind v4 non gestisce `&` in posizione non
+   iniziale e finirebbe per emettere anche una copia appiattita della
+   regola, che vincerebbe sempre bloccando l'animazione sullo stato
+   finale.
+   ============================================================ */
+@layer components {
+  /* ---- Riga di titolo con maschera: il testo sale da sotto il bordo ---- */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding: 0.04em 0.08em 0.16em;
+    margin: -0.04em -0.08em -0.16em;
+  }
+  /* A reveal concluso togliamo il clipping: le lettere possono "uscire"
+     quando reagiscono al mouse. */
+  [data-reveal-done="true"] .line-mask {
+    overflow: visible;
+  }
+
+  .line-rise {
+    display: block;
+    font-style: normal;
+    opacity: 0;
+    filter: blur(7px);
+    transform: translateY(118%) rotate(4deg) scale(1.05);
+    transition:
+      transform 1.15s var(--ease-brand),
+      opacity 1.15s var(--ease-brand),
+      filter 1.15s var(--ease-brand);
+    transition-delay: var(--d, 0s);
+    will-change: transform, filter;
+  }
+  [data-ready="true"] .line-rise {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  /* Variante sobria usata dalle card impilate. */
+  .line-rise-soft {
+    display: block;
+    font-style: normal;
+    opacity: 0;
+    transform: translateY(115%) rotate(4deg);
+    transition:
+      transform 0.9s var(--ease-brand),
+      opacity 0.9s var(--ease-brand);
+    transition-delay: var(--d, 0.25s);
+    will-change: transform;
+  }
+  [data-active="true"] .line-rise-soft {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  /* ---- Lettera che reagisce al passaggio del mouse ---- */
+  .char-lift {
+    display: inline-block;
+    will-change: transform;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.6),
+      color 0.35s var(--ease-brand),
+      text-shadow 0.35s var(--ease-brand);
+  }
+  .char-lift:hover {
+    transform: translateY(-0.12em) scale(1.24);
+    color: var(--color-accent);
+    text-shadow:
+      0 0 22px color-mix(in srgb, var(--color-accent) 78%, transparent),
+      0 0 52px color-mix(in srgb, var(--color-glow-b) 45%, transparent);
+  }
+
+  /* ---- Lettera che si ribalta in 3D all'ingresso ---- */
+  .char-flip {
+    display: inline-block;
+    opacity: 0;
+    transform: rotateX(-92deg) translateY(0.3em);
+    transform-origin: 50% 100%;
+  }
+  [data-ready="true"] .char-flip {
+    animation: char-flip-in 0.85s var(--ease-brand) forwards;
+    animation-delay: calc(var(--i, 0) * 0.045s);
+  }
+
+  /* ---- Caratteri della tagline: risalgono ruotando, poi brillano ---- */
+  .char-tagline {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    opacity: 0;
+    transform: translateY(0.7em) rotate(8deg);
+    background-image: linear-gradient(
+      100deg,
+      var(--color-accent),
+      #ffe9b0 42%,
+      var(--color-glow-b) 66%,
+      var(--color-accent)
+    );
+    background-size: 240% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px color-mix(in srgb, var(--color-accent) 30%, transparent));
+  }
+  [data-ready="true"] .char-tagline {
+    animation:
+      char-tagline-in 0.85s var(--ease-brand) forwards calc(0.9s + var(--i, 0) * 0.05s),
+      shine 6s linear infinite;
+  }
+
+  /* ---- Comparsa generica alla prima entrata in viewport ---- */
+  .fade-rise {
+    opacity: 0;
+    transform: translateY(34px);
+    transition:
+      opacity 0.9s var(--ease-brand),
+      transform 0.9s var(--ease-brand);
+  }
+  [data-inview="true"] .fade-rise,
+  .fade-rise[data-inview="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- Testo e chip che salgono dopo il titolo, nelle card impilate ---- */
+  .rise-late {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.8s var(--ease-brand) 0.5s,
+      transform 0.8s var(--ease-brand) 0.5s;
+  }
+  [data-active="true"] .rise-late {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes char-flip-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes char-tagline-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
