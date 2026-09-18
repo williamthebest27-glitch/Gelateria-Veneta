@@ -234,10 +234,22 @@ function FlavorCard({ flavor, index }: { flavor: Flavor; index: number }) {
 function FlavorScoop() {
   return (
     <div aria-hidden className="relative grid h-[78%] w-[78%] place-items-center">
-      <span className="absolute bottom-[12%] h-[26%] w-[62%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c2)_55%,transparent),transparent_75%)] blur-[14px]" />
-      <span className="relative aspect-square w-[68%] rounded-full bg-[radial-gradient(circle_at_34%_28%,color-mix(in_srgb,var(--c1)_100%,#fff_0%),var(--c1)_38%,var(--c2)_92%)] shadow-[inset_-10px_-14px_26px_rgb(0_0_0/0.28),inset_8px_10px_22px_rgb(255_255_255/0.22),0_18px_30px_rgb(0_0_0/0.45)]">
-        <span className="absolute left-[22%] top-[16%] h-[22%] w-[30%] rotate-[-25deg] rounded-[50%] bg-white/35 blur-[6px]" />
-        <span className="absolute bottom-[18%] right-[20%] h-[12%] w-[16%] rounded-[50%] bg-white/15 blur-[4px]" />
+      {/* Ombra a terra */}
+      <span className="absolute bottom-[11%] h-[24%] w-[64%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c2)_60%,transparent),transparent_76%)] blur-[15px]" />
+
+      {/* Corpo della pallina: forma leggermente irregolare, non una sfera perfetta */}
+      <span className="relative aspect-square w-[70%] rotate-[-6deg] overflow-hidden rounded-[48%_52%_44%_56%/52%_46%_54%_48%] bg-[radial-gradient(circle_at_34%_26%,color-mix(in_srgb,var(--c1)_88%,#fff),var(--c1)_42%,var(--c2)_94%)] shadow-[inset_-12px_-16px_30px_rgb(0_0_0/0.34),inset_10px_12px_24px_rgb(255_255_255/0.2),0_18px_30px_rgb(0_0_0/0.45)]">
+        {/* Solchi del porzionatore: creste morbide che seguono la curvatura */}
+        <span className="absolute -left-[18%] top-[12%] h-[46%] w-[86%] rotate-[-22deg] rounded-[50%] bg-[linear-gradient(180deg,rgb(255_255_255/0.18),transparent_70%)] blur-[7px]" />
+        <span className="absolute -right-[22%] top-[34%] h-[52%] w-[88%] rotate-[14deg] rounded-[50%] bg-[linear-gradient(180deg,rgb(255_255_255/0.12),transparent_66%)] blur-[8px]" />
+        <span className="absolute -left-[10%] bottom-[6%] h-[40%] w-[92%] rotate-[8deg] rounded-[50%] bg-[linear-gradient(0deg,rgb(0_0_0/0.22),transparent_72%)] blur-[9px]" />
+
+        {/* Grana fine: toglie l'aspetto plasticoso */}
+        <span className="absolute inset-0 grain opacity-[0.18]" />
+
+        {/* Luce principale e rimbalzo in basso a destra */}
+        <span className="absolute left-[20%] top-[13%] h-[24%] w-[32%] rotate-[-25deg] rounded-[50%] bg-white/40 blur-[7px]" />
+        <span className="absolute bottom-[16%] right-[17%] h-[13%] w-[18%] rounded-[50%] bg-white/[0.18] blur-[5px]" />
       </span>
     </div>
   );
