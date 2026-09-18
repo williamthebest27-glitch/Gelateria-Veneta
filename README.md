@@ -52,6 +52,27 @@ Tutto in [`lib/content.ts`](lib/content.ts): indirizzo, telefono, email, orari,
 voci di menu, i sei gusti in vetrina, le quattro regole e la carta dei gusti
 completa. I componenti non contengono testo scritto a mano.
 
+### Aggiungere la foto di un gusto
+
+Otto dei venti gusti hanno una fotografia; gli altri mostrano una pallina
+disegnata in CSS con i due colori del gusto. Per sostituirla con una foto vera
+basta mettere il PNG/WebP (sfondo trasparente) in `public/img/gusti/` e
+aggiungere una riga al gusto in `lib/content.ts`:
+
+```ts
+{
+  name: "Vaniglia del Madagascar",
+  category: "crema",
+  photo: "/img/gusti/vaniglia.webp",   // ← questa
+  c1: "#f0e0b8",
+  c2: "#d8bf82",
+  …
+}
+```
+
+Senza `photo` la card usa la pallina in CSS: la griglia resta coerente anche a
+foto incomplete, senza immagini rotte.
+
 ## Come sono fatte le animazioni
 
 Le sezioni "pinnate" non passano mai il progresso dello scroll dallo state di
