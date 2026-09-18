@@ -413,7 +413,7 @@ export function CinematicSpot() {
             <div>
               <Link
                 href="/#contatti"
-                className="pointer-events-auto mt-[clamp(22px,4vh,40px)] inline-flex items-center gap-3 rounded-full border border-[color-mix(in_srgb,var(--color-accent)_60%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] px-[30px] py-[15px] text-[14px] font-semibold uppercase tracking-[0.12em] text-[#f7f4ee] no-underline transition-[box-shadow,transform,background] duration-[400ms] ease-brand hover:-translate-y-0.5 hover:bg-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] hover:shadow-[0_14px_40px_color-mix(in_srgb,var(--color-accent)_28%,transparent)]"
+                className="pointer-events-auto mt-[clamp(22px,4vh,40px)] inline-flex items-center gap-3 rounded-full border border-[color-mix(in_srgb,var(--color-accent)_60%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] px-[30px] py-[15px] text-[14px] font-semibold uppercase tracking-[0.12em] text-[#f7f4ee] no-underline transition-[box-shadow,transform,translate,scale,rotate,background] duration-[400ms] ease-brand hover:-translate-y-0.5 hover:bg-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] hover:shadow-[0_14px_40px_color-mix(in_srgb,var(--color-accent)_28%,transparent)]"
               >
                 <b className="h-[7px] w-[7px] rounded-full bg-accent shadow-[0_0_12px_var(--color-accent)]" />
                 Vieni a provarlo

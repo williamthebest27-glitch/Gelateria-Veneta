@@ -158,30 +158,30 @@ export function Hero() {
           <span className="line-mask">
             <i className="line-rise" style={{ "--d": "0.55s" } as React.CSSProperties}>
               <SplitText text={TITLE_BOTTOM} charClassName="char-lift" />
-              <em className="inline-block px-[0.08em] font-serif text-[1em] font-normal italic text-shine drop-shadow-[0_0_34px_color-mix(in_srgb,var(--color-glow-b)_38%,transparent)] transition-[transform,filter] duration-[400ms] [transition-timing-function:cubic-bezier(0.2,0.9,0.3,1.6)] hover:scale-[1.12] hover:-translate-y-[0.05em] hover:drop-shadow-[0_0_54px_color-mix(in_srgb,var(--color-glow-a)_60%,transparent)]">
+              <em className="inline-block px-[0.08em] font-serif text-[1em] font-normal italic text-shine drop-shadow-[0_0_34px_color-mix(in_srgb,var(--color-glow-b)_38%,transparent)] transition-[transform,translate,scale,rotate,filter] duration-[400ms] [transition-timing-function:cubic-bezier(0.2,0.9,0.3,1.6)] hover:scale-[1.12] hover:-translate-y-[0.05em] hover:drop-shadow-[0_0_54px_color-mix(in_srgb,var(--color-glow-a)_60%,transparent)]">
                 Gusto
               </em>
             </i>
           </span>
         </h1>
 
-        <p className="mt-[clamp(20px,2.8vw,34px)] w-fit origin-left font-display text-[clamp(1.2rem,3.2vw,2.4rem)] font-semibold uppercase leading-[1.12] tracking-[0.12em] transition-transform duration-[400ms] ease-brand hover:scale-[1.08]">
+        <p className="mt-[clamp(20px,2.8vw,34px)] w-fit origin-left font-display text-[clamp(1.2rem,3.2vw,2.4rem)] font-semibold uppercase leading-[1.12] tracking-[0.12em] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[400ms] ease-brand hover:scale-[1.08]">
           <SplitText text={SITE.name} charClassName="char-tagline" />
         </p>
 
         <div className="mt-[clamp(30px,3.6vw,44px)] flex flex-wrap justify-start gap-4">
           <span
             data-ready={ready}
-            className="inline-block translate-y-[30px] scale-[0.88] opacity-0 transition-[opacity,transform] duration-700 [transition-timing-function:cubic-bezier(0.34,1.5,0.5,1)] [transition-delay:1.3s] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
+            className="inline-block translate-y-[30px] scale-[0.88] opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-700 [transition-timing-function:cubic-bezier(0.34,1.5,0.5,1)] [transition-delay:1.3s] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
           >
             <Link
               ref={primaryRef}
               href="/gusti"
-              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-accent px-[30px] py-4 text-[15px] font-semibold text-[#0a0a0a] no-underline transition-transform duration-300 ease-soft will-change-transform"
+              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-accent px-[30px] py-4 text-[15px] font-semibold text-[#0a0a0a] no-underline transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-300 ease-soft will-change-transform"
             >
               <span
                 aria-hidden
-                className="absolute inset-0 -translate-x-[120%] bg-[linear-gradient(110deg,transparent_0%,rgb(255_255_255/0.65)_45%,transparent_70%)] transition-transform duration-[800ms] ease-brand group-hover:translate-x-[120%]"
+                className="absolute inset-0 -translate-x-[120%] bg-[linear-gradient(110deg,transparent_0%,rgb(255_255_255/0.65)_45%,transparent_70%)] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[800ms] ease-brand group-hover:translate-x-[120%]"
               />
               <span className="relative">Scopri i gusti</span>
               <svg
@@ -190,7 +190,7 @@ export function Hero() {
                 stroke="currentColor"
                 strokeWidth={2.2}
                 aria-hidden
-                className="relative h-[17px] w-[17px] transition-transform duration-[450ms] ease-brand group-hover:translate-x-1 group-hover:-translate-y-1"
+                className="relative h-[17px] w-[17px] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[450ms] ease-brand group-hover:translate-x-1 group-hover:-translate-y-1"
               >
                 <path d="M7 17 17 7M9 7h8v8" />
               </svg>
@@ -199,12 +199,12 @@ export function Hero() {
 
           <span
             data-ready={ready}
-            className="inline-block translate-y-[30px] scale-[0.88] opacity-0 transition-[opacity,transform] duration-700 [transition-timing-function:cubic-bezier(0.34,1.5,0.5,1)] [transition-delay:1.46s] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
+            className="inline-block translate-y-[30px] scale-[0.88] opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-700 [transition-timing-function:cubic-bezier(0.34,1.5,0.5,1)] [transition-delay:1.46s] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
           >
             <Link
               ref={ghostRef}
               href="/#contatti"
-              className="group inline-flex items-center gap-3 rounded-full border border-line bg-white/[0.03] px-[30px] py-4 text-[15px] font-semibold text-ink no-underline backdrop-blur-lg transition-[transform,border-color] duration-300 ease-soft will-change-transform hover:border-ink"
+              className="group inline-flex items-center gap-3 rounded-full border border-line bg-white/[0.03] px-[30px] py-4 text-[15px] font-semibold text-ink no-underline backdrop-blur-lg transition-[transform,translate,scale,rotate,border-color] duration-300 ease-soft will-change-transform hover:border-ink"
             >
               Dove trovarci
               <svg
@@ -213,7 +213,7 @@ export function Hero() {
                 stroke="currentColor"
                 strokeWidth={2.2}
                 aria-hidden
-                className="h-[17px] w-[17px] transition-transform duration-[450ms] ease-brand group-hover:translate-x-1"
+                className="h-[17px] w-[17px] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[450ms] ease-brand group-hover:translate-x-1"
               >
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>

@@ -155,11 +155,11 @@ function FlavorCard({ flavor, index }: { flavor: Flavor; index: number }) {
         } as React.CSSProperties
       }
       className={[
-        "group transition-[opacity,transform] duration-700 [transition-timing-function:cubic-bezier(0.16,0.84,0.44,1)]",
+        "group transition-[opacity,transform,translate,scale,rotate] duration-700 [transition-timing-function:cubic-bezier(0.16,0.84,0.44,1)]",
         visible ? "translate-y-0 scale-100 opacity-100" : "translate-y-[30px] scale-[0.985] opacity-0",
       ].join(" ")}
     >
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-[rgb(22_12_14/0.72)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] shadow-[0_14px_34px_-16px_rgb(0_0_0/0.7)] transition-transform duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:-translate-y-1.5 group-hover:rotate-[-1.2deg]">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-[rgb(22_12_14/0.72)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] shadow-[0_14px_34px_-16px_rgb(0_0_0/0.7)] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:-translate-y-1.5 group-hover:rotate-[-1.2deg]">
         {/* Bordo che si illumina al passaggio del mouse */}
         <span
           aria-hidden
@@ -181,7 +181,7 @@ function FlavorCard({ flavor, index }: { flavor: Flavor; index: number }) {
               width={420}
               height={315}
               sizes="(max-width: 600px) 90vw, (max-width: 1024px) 45vw, 300px"
-              className="h-[78%] w-[78%] object-contain transition-transform duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:scale-105"
+              className="h-[78%] w-[78%] object-contain transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[350ms] [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)] group-hover:scale-105"
             />
           ) : (
             <FlavorScoop />

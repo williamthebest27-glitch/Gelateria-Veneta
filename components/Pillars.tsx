@@ -147,7 +147,7 @@ function PillarCard({ pillar, index, total, ref }: PillarCardProps) {
       {/* Bordo a gradiente conico rotante */}
       <span aria-hidden className="ring-conic z-[4] opacity-90" />
 
-      <div className="relative z-[1] flex flex-1 translate-y-[66px] scale-[0.965] flex-col justify-end p-[clamp(26px,5.5vw,56px)] pb-[clamp(96px,17vh,150px)] opacity-0 transition-[opacity,transform] duration-[900ms] ease-brand will-change-transform data-[active=true]:translate-y-0 data-[active=true]:scale-100 data-[active=true]:opacity-100 max-[560px]:pb-[clamp(70px,12vh,120px)]"
+      <div className="relative z-[1] flex flex-1 translate-y-[66px] scale-[0.965] flex-col justify-end p-[clamp(26px,5.5vw,56px)] pb-[clamp(96px,17vh,150px)] opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-[900ms] ease-brand will-change-transform data-[active=true]:translate-y-0 data-[active=true]:scale-100 data-[active=true]:opacity-100 max-[560px]:pb-[clamp(70px,12vh,120px)]"
         data-active={active}
       >
         {/* Tinta e grana della card */}
@@ -170,7 +170,7 @@ function PillarCard({ pillar, index, total, ref }: PillarCardProps) {
         <div className="pointer-events-none absolute right-[clamp(14px,4.5vw,48px)] top-[clamp(20px,5vw,52px)] z-[2] aspect-square w-[clamp(150px,33vw,330px)] animate-[float-soft_7s_ease-in-out_infinite] [perspective:1000px] max-[560px]:right-3 max-[560px]:top-[clamp(40px,12vw,72px)] max-[560px]:w-[48vw]">
           <span
             data-active={active}
-            className="absolute inset-[4%] scale-[0.6] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_72%)] opacity-0 blur-[26px] transition-[opacity,transform] duration-[1200ms] ease-brand [transition-delay:0.1s] data-[active=true]:scale-100 data-[active=true]:opacity-95"
+            className="absolute inset-[4%] scale-[0.6] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_72%)] opacity-0 blur-[26px] transition-[opacity,transform,translate,scale,rotate] duration-[1200ms] ease-brand [transition-delay:0.1s] data-[active=true]:scale-100 data-[active=true]:opacity-95"
           />
           <Image
             src={pillar.photo}
@@ -178,7 +178,7 @@ function PillarCard({ pillar, index, total, ref }: PillarCardProps) {
             fill
             sizes="(max-width: 560px) 48vw, (max-width: 1200px) 33vw, 330px"
             data-active={active}
-            className="relative z-[1] object-contain opacity-0 drop-shadow-[0_20px_30px_rgb(0_0_0/0.55)] [clip-path:inset(0_0_100%_0)] [transform:rotateY(16deg)_scale(1.2)] transition-[opacity,transform,clip-path] duration-[1150ms] ease-brand [transition-delay:0.18s] will-change-[transform,clip-path] data-[active=true]:opacity-100 data-[active=true]:[clip-path:inset(0_0_0_0)] data-[active=true]:[transform:rotateY(0)_scale(1)]"
+            className="relative z-[1] object-contain opacity-0 drop-shadow-[0_20px_30px_rgb(0_0_0/0.55)] [clip-path:inset(0_0_100%_0)] [transform:rotateY(16deg)_scale(1.2)] transition-[opacity,transform,translate,scale,rotate,clip-path] duration-[1150ms] ease-brand [transition-delay:0.18s] will-change-[transform,clip-path] data-[active=true]:opacity-100 data-[active=true]:[clip-path:inset(0_0_0_0)] data-[active=true]:[transform:rotateY(0)_scale(1)]"
           />
         </div>
 

@@ -97,7 +97,7 @@ export function Contacts() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-line px-[18px] py-2.5 text-[13px] font-medium text-ink no-underline transition-[border-color,color,transform] duration-[350ms] ease-brand hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+                  className="rounded-full border border-line px-[18px] py-2.5 text-[13px] font-medium text-ink no-underline transition-[border-color,color,transform,translate,scale,rotate] duration-[350ms] ease-brand hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                 >
                   {social.label}
                 </a>
@@ -129,7 +129,7 @@ export function Contacts() {
             </textPath>
           </text>
         </svg>
-        <span className="grid aspect-square w-[46%] place-items-center rounded-full bg-accent text-[#0a0a0a] shadow-[0_0_30px_rgb(255_197_61/0.5)] transition-transform duration-[400ms] ease-brand hover:scale-[1.12]">
+        <span className="grid aspect-square w-[46%] place-items-center rounded-full bg-accent text-[#0a0a0a] shadow-[0_0_30px_rgb(255_197_61/0.5)] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[400ms] ease-brand hover:scale-[1.12]">
           <ArrowIcon className="h-5 w-5" />
         </span>
       </a>
@@ -200,11 +200,11 @@ function InfoRow({
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       <span className="min-w-24 text-[12px] uppercase tracking-[0.16em] text-muted">{label}</span>
-      <span className="flex-1 text-[clamp(1.05rem,1.7vw,1.4rem)] font-medium tracking-[-0.01em] transition-[transform,color] duration-[400ms] ease-brand group-hover:translate-x-2 group-hover:text-accent">
+      <span className="flex-1 text-[clamp(1.05rem,1.7vw,1.4rem)] font-medium tracking-[-0.01em] transition-[transform,translate,scale,rotate,color] duration-[400ms] ease-brand group-hover:translate-x-2 group-hover:text-accent">
         {value}
       </span>
       <span className="grid h-[38px] w-[38px] flex-none place-items-center rounded-full border border-line transition-all duration-[400ms] ease-brand group-hover:border-accent group-hover:bg-accent group-hover:text-[#0a0a0a]">
-        <ArrowIcon className="h-[15px] w-[15px] transition-transform duration-[400ms] ease-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        <ArrowIcon className="h-[15px] w-[15px] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[400ms] ease-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       </span>
     </a>
   );
@@ -262,11 +262,11 @@ function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="group relative mt-[22px] inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full bg-accent p-[17px] font-sans text-base font-semibold text-[#0a0a0a] transition-transform duration-300 ease-brand hover:-translate-y-0.5 disabled:cursor-progress disabled:opacity-70"
+        className="group relative mt-[22px] inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full bg-accent p-[17px] font-sans text-base font-semibold text-[#0a0a0a] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-300 ease-brand hover:-translate-y-0.5 disabled:cursor-progress disabled:opacity-70"
       >
         <span
           aria-hidden
-          className="absolute inset-0 -translate-x-[120%] bg-[linear-gradient(110deg,transparent,rgb(255_255_255/0.6)_45%,transparent_70%)] transition-transform duration-[800ms] ease-brand group-hover:translate-x-[120%]"
+          className="absolute inset-0 -translate-x-[120%] bg-[linear-gradient(110deg,transparent,rgb(255_255_255/0.6)_45%,transparent_70%)] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[800ms] ease-brand group-hover:translate-x-[120%]"
         />
         <span className="relative">{pending ? "Invio in corso…" : "Invia messaggio"}</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} aria-hidden className="relative h-[17px] w-[17px]">

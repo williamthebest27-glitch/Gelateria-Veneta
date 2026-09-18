@@ -145,7 +145,7 @@ export function FlavorShowcase() {
                 />
                 <span
                   data-ready={inView}
-                  className="inline-block translate-y-2 opacity-0 transition-[opacity,transform] duration-700 ease-brand [transition-delay:0.1s] data-[ready=true]:translate-y-0 data-[ready=true]:opacity-100"
+                  className="inline-block translate-y-2 opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-700 ease-brand [transition-delay:0.1s] data-[ready=true]:translate-y-0 data-[ready=true]:opacity-100"
                 >
                   Carta dei gusti
                 </span>
@@ -155,7 +155,7 @@ export function FlavorShowcase() {
                 <SplitText text="I nostri " charClassName="char-flip" />
                 <em
                   data-ready={inView}
-                  className="inline-block translate-y-[0.18em] scale-[0.92] font-serif font-normal italic opacity-0 text-shine drop-shadow-[0_0_26px_color-mix(in_srgb,var(--color-glow-b)_32%,transparent)] transition-[opacity,transform] duration-[900ms] [transition-timing-function:var(--ease-spring)] [transition-delay:0.15s] hover:scale-[1.07] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
+                  className="inline-block translate-y-[0.18em] scale-[0.92] font-serif font-normal italic opacity-0 text-shine drop-shadow-[0_0_26px_color-mix(in_srgb,var(--color-glow-b)_32%,transparent)] transition-[opacity,transform,translate,scale,rotate] duration-[900ms] [transition-timing-function:var(--ease-spring)] [transition-delay:0.15s] hover:scale-[1.07] data-[ready=true]:translate-y-0 data-[ready=true]:scale-100 data-[ready=true]:opacity-100"
                 >
                   gusti
                 </em>
@@ -196,7 +196,15 @@ export function FlavorShowcase() {
                 style={{ "--c1": flavor.c1, "--c2": flavor.c2 } as React.CSSProperties}
                 className="w-[clamp(260px,26vw,360px)] flex-none snap-center will-change-transform max-[640px]:w-[78vw]"
               >
-                <div className="group relative z-[1] rounded-[26px] border border-line bg-[rgb(20_20_25/0.58)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.07),rgb(255_255_255/0.015))] px-7 pb-8 pt-[30px] shadow-[0_18px_44px_rgb(0_0_0/0.35)] transition-[transform,box-shadow,border-color,background-color] duration-[800ms] ease-brand will-change-transform hover:z-[6] hover:-translate-y-3 hover:scale-[1.06] hover:border-[color-mix(in_srgb,var(--c1)_75%,transparent)] hover:bg-[rgb(31_31_39/0.72)] hover:shadow-[0_38px_74px_rgb(0_0_0/0.55),0_0_70px_color-mix(in_srgb,var(--c1)_30%,transparent)]">
+                <div className="group relative z-[1] rounded-[26px] border border-line bg-[rgb(20_20_25/0.58)] bg-[image:linear-gradient(165deg,rgb(255_255_255/0.07),rgb(255_255_255/0.015))] px-7 pb-8 pt-[30px] shadow-[0_18px_44px_rgb(0_0_0/0.35)] transition-[translate,scale] duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] will-change-transform hover:z-[6] hover:-translate-y-3 hover:scale-[1.05]">
+                  {/* Ombra e bordo luminoso su uno strato a parte: si
+                      accendono in opacità, così il sollevamento non
+                      costringe il browser a ridisegnare l'ombra a ogni
+                      fotogramma. */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 rounded-[26px] border border-[color-mix(in_srgb,var(--c1)_75%,transparent)] opacity-0 shadow-[0_38px_74px_rgb(0_0_0/0.55),0_0_70px_color-mix(in_srgb,var(--c1)_30%,transparent)] transition-opacity duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:opacity-100"
+                  />
                   <div
                     className="relative flex h-[clamp(220px,24vw,300px)] items-end justify-center max-[900px]:animate-none"
                     style={{
@@ -204,7 +212,7 @@ export function FlavorShowcase() {
                       animationDelay: `${-1.2 * i}s`,
                     }}
                   >
-                    <span className="absolute inset-x-0 bottom-[8%] top-auto h-[60%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_75%)] opacity-85 blur-[28px] transition-[opacity,transform] duration-[800ms] ease-brand group-hover:scale-[1.16] group-hover:opacity-100" />
+                    <span className="absolute inset-x-0 bottom-[8%] top-auto h-[60%] rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--c1)_60%,transparent),transparent_75%)] opacity-85 blur-[28px] transition-[opacity,scale] duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.14] group-hover:opacity-100" />
                     <span
                       ref={(el) => {
                         photoRefs.current[i] = el;
@@ -216,7 +224,7 @@ export function FlavorShowcase() {
                         alt={flavor.name}
                         fill
                         sizes="(max-width: 640px) 78vw, (max-width: 1400px) 26vw, 360px"
-                        className="pointer-events-none object-contain drop-shadow-[0_18px_26px_rgb(0_0_0/0.5)] transition-[transform,filter] duration-[900ms] ease-brand group-hover:scale-[1.05] group-hover:brightness-110 group-hover:saturate-[1.08] max-[900px]:drop-shadow-none"
+                        className="pointer-events-none object-contain drop-shadow-[0_18px_26px_rgb(0_0_0/0.5)] transition-[scale] duration-[1000ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.06] max-[900px]:drop-shadow-none"
                       />
                     </span>
                   </div>

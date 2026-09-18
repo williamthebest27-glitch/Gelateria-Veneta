@@ -45,7 +45,7 @@ export default function FlavorsPage() {
             </p>
             <Link
               href="/#contatti"
-              className="group inline-flex items-center gap-3 rounded-full bg-accent px-[30px] py-4 text-[15px] font-semibold text-[#0a0a0a] no-underline transition-transform duration-300 ease-soft hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-3 rounded-full bg-accent px-[30px] py-4 text-[15px] font-semibold text-[#0a0a0a] no-underline transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-300 ease-soft hover:-translate-y-0.5"
             >
               Dove trovarci
               <svg
@@ -54,7 +54,7 @@ export default function FlavorsPage() {
                 stroke="currentColor"
                 strokeWidth={2.2}
                 aria-hidden
-                className="h-[17px] w-[17px] transition-transform duration-[450ms] ease-brand group-hover:translate-x-1"
+                className="h-[17px] w-[17px] transition-[transform,translate,scale,rotate,translate,scale,rotate] duration-[450ms] ease-brand group-hover:translate-x-1"
               >
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
