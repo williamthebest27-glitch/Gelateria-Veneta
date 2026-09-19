@@ -104,13 +104,23 @@ email diretto. Per farlo inviare davvero, imposta queste variabili d'ambiente
 
 Senza `RESEND_API_KEY` e `CONTACT_FROM_EMAIL` il modulo non finge di aver
 inviato: lo dice chiaramente e offre l'indirizzo a cui scrivere.
-
 ## Asset
 
-I file originali (PNG da ~2 MB, video fino a 54 MB) sono stati ricompressi per
-il web: immagini in WebP a 900px, video H.264 a 1280px/30fps con poster WebP.
-Da ~120 MB a ~8 MB complessivi. Le sorgenti restano nelle cartelle
-`immagini/` e `Video/`, accanto al progetto.
+**Immagini** — i PNG originali (~2 MB l'uno) diventano WebP a 900px: da 27 MB a
+1,8 MB complessivi.
 
-Lo spot (3,3 MB) non viene scaricato al caricamento della pagina: parte solo
-quando la sezione si avvicina al viewport.
+**Video** — restano alla qualità originale, 1920x1080 a 60fps. Non vengono
+ricodificati: si copia il flusso così com'è e si sposta solo l'indice in testa
+al file (`+faststart`), così la riproduzione parte in streaming senza aspettare
+il download completo. Zero perdita di generazione, ~12 MB ciascuno.
+
+Lo spot non viene scaricato al caricamento della pagina: parte solo quando la
+sezione si avvicina al viewport. L'hero mostra il poster WebP (90 KB) finché il
+video non è pronto.
+
+Le sorgenti originali restano nelle cartelle `immagini/` e `Video/`, accanto al
+progetto.
+
+> Con due video da 12 MB, i 100 GB di banda del piano Hobby di Vercel bastano
+> per circa 4.000 visite complete al mese. Se serve alleggerire, una ricodifica
+> a CRF 18 porta l'hero a 9,4 MB restando indistinguibile a occhio.
