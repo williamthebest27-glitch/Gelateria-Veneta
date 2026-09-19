@@ -104,6 +104,7 @@ email diretto. Per farlo inviare davvero, imposta queste variabili d'ambiente
 
 Senza `RESEND_API_KEY` e `CONTACT_FROM_EMAIL` il modulo non finge di aver
 inviato: lo dice chiaramente e offre l'indirizzo a cui scrivere.
+
 ## Asset
 
 **Immagini** — i PNG originali (~2 MB l'uno) diventano WebP a 900px: da 27 MB a
